@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="600" viewBox="0 0 1920 600" fill="none">
+  <defs>
+    <linearGradient id="background" x1="120" y1="80" x2="1740" y2="570" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#101B35"/>
+      <stop offset=".58" stop-color="#08111F"/>
+      <stop offset="1" stop-color="#050914"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientTransform="matrix(530 0 0 310 1440 292)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#22D3EE" stop-opacity=".2"/>
+      <stop offset="1" stop-color="#22D3EE" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" stroke="#D9F9FF" stroke-opacity=".045"/>
+    </pattern>
+    <linearGradient id="mark" x1="1170" y1="142" x2="1680" y2="466" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#67E8F9" stop-opacity=".78"/>
+      <stop offset="1" stop-color="#22D3EE" stop-opacity=".08"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="600" fill="url(#background)"/>
+  <rect width="1920" height="600" fill="url(#glow)"/>
+  <rect width="1920" height="600" fill="url(#grid)"/>
+  <path d="M0 520H1920" stroke="#67E8F9" stroke-opacity=".12"/>
+  <path d="M1280 600 1590 0h110L1390 600h-110Z" fill="#67E8F9" fill-opacity=".035"/>
+  <path d="M1380 600 1690 0h38l-310 600h-38Z" fill="#67E8F9" fill-opacity=".06"/>
+  <rect x="1284" y="106" width="462" height="388" rx="38" stroke="url(#mark)" stroke-width="2"/>
+  <path d="M1360 389V213h48l76 104V213h51v176h-46l-78-106v106h-51Zm226 0 70-176h56l71 176h-57l-13-37h-61l-13 37h-53Zm81-79h33l-16-48-17 48Z" fill="url(#mark)"/>
+  <circle cx="1515" cy="300" r="232" stroke="#67E8F9" stroke-opacity=".1"/>
+  <circle cx="1515" cy="300" r="276" stroke="#67E8F9" stroke-opacity=".055"/>
+  <circle cx="1656" cy="156" r="5" fill="#67E8F9"/>
+  <circle cx="1347" cy="443" r="4" fill="#67E8F9" fill-opacity=".7"/>
+  <path d="M144 236h72" stroke="#67E8F9" stroke-width="3"/>
+  <path d="M144 250h42" stroke="#67E8F9" stroke-opacity=".35" stroke-width="2"/>
+</svg>
