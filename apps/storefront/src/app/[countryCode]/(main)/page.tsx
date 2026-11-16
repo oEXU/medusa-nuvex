@@ -1,13 +1,84 @@
 import { Metadata } from "next"
+import Image from "next/image"
 
 import Hero from "@modules/home/components/hero"
-import { listProducts } from "@lib/data/products"
 import { getRegion, listRegions } from "@lib/data/regions"
 import { toJsonLd } from "@lib/util/product-structured-data"
 import { getSiteOrigin, STORE_NAME } from "@lib/util/site"
 import { buildRegionsReturnPolicies } from "@lib/util/store-policies"
-import { translate } from "@lib/util/store-locale"
-import ProductPreview from "@modules/products/components/product-preview"
+
+const testimonials = [
+  {
+    name: "Mc Wago",
+    image: "/reviews/mc-wago.webp",
+    quote: "Muito bom o atendimento, entrega tudo certinho!!! Recomendo!",
+  },
+  {
+    name: "Victor Gabriel",
+    image: "/reviews/victor-gabriel.webp",
+    quote: "Recomendado em rapaziada, vale a pena.",
+  },
+  {
+    name: "Matheus Lopes",
+    image: "/reviews/matheus-lopes.webp",
+    quote: "Recomendo. Rápido atendimento e de confiança.",
+  },
+  {
+    name: "Valmir Major",
+    image: "/reviews/valmir-major.webp",
+    quote:
+      "Muito top e confiável, tive dificuldade pra instalar o jogo, mas pedi ajuda ao suporte no whatsapp. Objetive ajuda na mesma hora, ai consegui. Muito bom, recomendo.",
+  },
+  {
+    name: "Rickley Richard",
+    image: "/reviews/rickley-richard.webp",
+    quote:
+      "Rapaziada eu comprei e realmente funciona, a loja tem um atendimento excelente ao cliente, assinei a psn extra 12 meses, recomendo demais e os preços são bem acessíveis.",
+  },
+  {
+    name: "Edson Holanda",
+    image: "/reviews/edson-holanda.webp",
+    quote:
+      "Excelente serviço e atendimento esse eu recomendo, jogos baratos e de qualidade!",
+  },
+]
+
+function TestimonialCard({
+  testimonial,
+}: {
+  testimonial: (typeof testimonials)[number]
+}) {
+  return (
+    <li className="relative flex min-h-[320px] w-[320px] max-w-[82vw] shrink-0 flex-col items-center rounded-2xl border border-fuchsia-300/25 bg-gradient-to-br from-[#1c1430] via-[#120d22] to-[#0d0a18] px-6 pb-7 text-center shadow-[0_12px_40px_rgba(0,0,0,0.28)] transition duration-300 hover:-translate-y-1 hover:border-pink-300/60 hover:shadow-[0_18px_48px_rgba(217,70,239,0.16)] small:w-[360px]">
+      <span
+        aria-hidden="true"
+        className="absolute right-5 top-3 text-5xl leading-none text-pink-300/20"
+      >
+        “
+      </span>
+      <div className="-mt-12 rounded-full bg-gradient-to-br from-pink-300 to-fuchsia-500 p-1 shadow-[0_0_24px_rgba(217,70,239,0.35)]">
+        <Image
+          src={testimonial.image}
+          alt=""
+          width={88}
+          height={88}
+          className="h-[88px] w-[88px] rounded-full border-4 border-[#151027] object-cover"
+        />
+      </div>
+      <h3 className="mt-3 text-base font-bold text-white">{testimonial.name}</h3>
+      <p
+        aria-label="5 de 5 estrelas"
+        role="img"
+        className="mt-2 rounded-full border border-amber-300/15 bg-amber-300/[0.08] px-3 py-1 text-lg leading-5 tracking-[0.1em] text-amber-300"
+      >
+        ★★★★★
+      </p>
+      <blockquote className="mt-4 text-sm leading-6 text-slate-200">
+        {testimonial.quote}
+      </blockquote>
+    </li>
+  )
+}
 
 export const dynamic = "force-static"
 export const revalidate = 60
@@ -50,29 +121,7 @@ export default async function Home(props: {
     return null
   }
 
-  const [
-    origin,
-    regions,
-    {
-      response: { products },
-    },
-  ] = await Promise.all([
-    getSiteOrigin(),
-    listRegions(),
-    listProducts({
-      regionId: region.id,
-      queryParams: {
-        limit: 12,
-        fields: "*variants.calculated_price,*variants.images",
-      },
-    }),
-  ])
-  const currencyPricedProducts = products.filter((product) =>
-    product.variants?.some(
-      (variant) =>
-        variant.calculated_price?.currency_code === region.currency_code,
-    ),
-  )
+  const [origin, regions] = await Promise.all([getSiteOrigin(), listRegions()])
   const homeUrl = `${origin}/${countryCode}`
   const returnPolicies = buildRegionsReturnPolicies(regions)
   const structuredData = [
@@ -109,45 +158,42 @@ export default async function Home(props: {
       />
       <Hero region={region} countryCode={countryCode} />
       <section
-        id="catalogo"
-        className="bg-[#080b12] px-6 pb-20 text-white small:pb-28"
+        id="depoimentos"
+        className="bg-[#080b12] px-6 py-16 text-white small:py-20"
       >
-        <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-fuchsia-300/15 bg-[#100c20] px-6 py-12 small:px-12 small:py-14">
+        <div className="mx-auto max-w-7xl">
+          <h2 className="text-center text-2xl font-bold tracking-tight small:text-3xl">
+            Depoimentos
+          </h2>
           <div
             aria-hidden="true"
-            className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_120%,rgba(217,70,239,0.12),transparent_58%)]"
+            className="mx-auto mt-4 h-0.5 w-10 bg-pink-300"
           />
-          <div className="relative">
-            <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-pink-300">
-              {translate(countryCode, "catalog")}
-            </p>
-            <h2 className="text-3xl font-semibold tracking-[-0.04em] text-white small:text-4xl">
-              {currencyPricedProducts.length
-                ? translate(countryCode, "chooseAdventure")
-                : translate(countryCode, "catalogPreparing")}
-            </h2>
-            {currencyPricedProducts.length ? (
-              <ul className="mt-8 grid grid-cols-1 gap-5 xsmall:grid-cols-2 medium:grid-cols-4">
-                {currencyPricedProducts.slice(0, 8).map((product) => (
-                  <li
-                    key={product.id}
-                    className="overflow-hidden rounded-2xl bg-white p-3 text-slate-950"
-                  >
-                    <ProductPreview product={product} region={region} />
-                  </li>
+          <p className="mt-6 text-center text-sm text-slate-300">
+            Quem já confiou, recomenda
+          </p>
+          <div className="testimonial-marquee no-scrollbar mt-20 overflow-hidden pt-12">
+            <div className="testimonial-marquee-track flex w-max">
+              <ul
+                aria-label="Depoimentos de clientes"
+                className="flex shrink-0 gap-5 pr-5"
+              >
+                {testimonials.map((testimonial) => (
+                  <TestimonialCard
+                    key={testimonial.name}
+                    testimonial={testimonial}
+                  />
                 ))}
               </ul>
-            ) : (
-              <div className="mt-5 flex flex-col gap-5 small:flex-row small:items-end small:justify-between">
-                <p className="max-w-2xl text-sm leading-6 text-slate-300/75">
-                  {translate(countryCode, "catalogDescription")}
-                </p>
-                <span className="inline-flex w-fit items-center gap-2 rounded-full border border-pink-200/15 bg-pink-200/[0.06] px-4 py-2 text-xs font-semibold text-pink-100/80">
-                  <span className="h-1.5 w-1.5 rounded-full bg-pink-300" />
-                  {translate(countryCode, "comingSoon")}
-                </span>
-              </div>
-            )}
+              <ul aria-hidden="true" className="flex shrink-0 gap-5 pr-5">
+                {testimonials.map((testimonial) => (
+                  <TestimonialCard
+                    key={testimonial.name}
+                    testimonial={testimonial}
+                  />
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </section>

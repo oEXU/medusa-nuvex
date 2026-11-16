@@ -109,11 +109,34 @@
   animation: hud-float-2 6.5s ease-in-out infinite 0.7s;
 }
 
+@keyframes testimonials-scroll-right {
+  from {
+    transform: translateX(-50%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+.testimonial-marquee-track {
+  animation: testimonials-scroll-right 72s linear infinite;
+}
+
+.testimonial-marquee:hover .testimonial-marquee-track {
+  animation-play-state: paused;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .nuvex-logo-float,
   .hud-float-1,
-  .hud-float-2 {
+  .hud-float-2,
+  .testimonial-marquee-track {
     animation: none;
+  }
+
+  .testimonial-marquee {
+    overflow-x: auto;
   }
 }
 

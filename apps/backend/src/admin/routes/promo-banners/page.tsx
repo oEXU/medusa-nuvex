@@ -5,27 +5,9 @@ import Medusa from "@medusajs/js-sdk"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { type FormEvent, type ReactNode, useState } from "react"
 
-const getAuthHeaders = () => {
-  const headers: Record<string, string> = {}
-  if (typeof window !== "undefined") {
-    const token =
-      localStorage.getItem("medusa_auth_token") ||
-      sessionStorage.getItem("medusa_auth_token") ||
-      localStorage.getItem("_medusa_jwt")
-    if (token) {
-      headers["Authorization"] = `Bearer ${token}`
-    }
-  }
-  return headers
-}
-
 const sdk = new Medusa({
   baseUrl: "/",
-  auth: {
-    type: "jwt",
-    jwtTokenStorageKey: "medusa_auth_token",
-    fetchCredentials: "include",
-  },
+  auth: { type: "session" },
 })
 
 const bannerTypes = [
@@ -45,6 +27,7 @@ type PromoBanner = {
   subtitle: string | null
   image_url: string
   mobile_image_url: string | null
+  image_only: boolean
   alt_text: string
   link_url: string | null
   cta_label: string | null
@@ -62,6 +45,7 @@ const emptyForm: BannerPayload = {
   subtitle: "",
   image_url: "",
   mobile_image_url: "",
+  image_only: false,
   alt_text: "",
   link_url: "",
   cta_label: "",
@@ -79,25 +63,10 @@ const PromoBannersPage = () => {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["promo-banners"],
-    queryFn: async () => {
-      try {
-        return await sdk.client.fetch<{ promo_banners: PromoBanner[] }>(
-          "/admin/promo-banners",
-          {
-            headers: getAuthHeaders(),
-          }
-        )
-      } catch (err: any) {
-        // Fallback resiliente: lê da rota pública se a sessão admin estiver revalidando
-        try {
-          return await sdk.client.fetch<{ promo_banners: PromoBanner[] }>(
-            "/store/promo-banners"
-          )
-        } catch {
-          throw err
-        }
-      }
-    },
+    queryFn: () =>
+      sdk.client.fetch<{ promo_banners: PromoBanner[] }>(
+        "/admin/promo-banners"
+      ),
   })
 
   const refresh = () =>
@@ -105,19 +74,16 @@ const PromoBannersPage = () => {
 
   const saveBanner = useMutation({
     mutationFn: async (payload: BannerPayload) => {
-      const headers = getAuthHeaders()
       if (editing) {
         return sdk.client.fetch(`/admin/promo-banners/${editing.id}`, {
           method: "POST",
           body: payload,
-          headers,
         })
       }
 
       return sdk.client.fetch("/admin/promo-banners", {
         method: "POST",
         body: payload,
-        headers,
       })
     },
     onSuccess: () => {
@@ -136,7 +102,6 @@ const PromoBannersPage = () => {
       sdk.client.fetch(`/admin/promo-banners/${banner.id}`, {
         method: "POST",
         body: { is_active: !banner.is_active },
-        headers: getAuthHeaders(),
       }),
     onSuccess: () => void refresh(),
     onError: (mutationError) => setActionError(mutationError.message),
@@ -146,7 +111,6 @@ const PromoBannersPage = () => {
     mutationFn: (id: string) =>
       sdk.client.fetch(`/admin/promo-banners/${id}`, {
         method: "DELETE",
-        headers: getAuthHeaders(),
       }),
     onSuccess: () => {
       setActionError("")
@@ -171,6 +135,7 @@ const PromoBannersPage = () => {
       subtitle: optionalText("subtitle"),
       image_url: String(formData.get("image_url") ?? "").trim(),
       mobile_image_url: optionalText("mobile_image_url"),
+      image_only: formData.get("image_only") === "on",
       alt_text: String(formData.get("alt_text") ?? "").trim(),
       link_url: optionalText("link_url"),
       cta_label: optionalText("cta_label"),
@@ -359,6 +324,15 @@ const PromoBannersPage = () => {
                 className="h-4 w-4 accent-ui-fg-interactive"
               />
               Banner ativo
+            </label>
+            <label className="flex items-center gap-3 text-sm medium:col-span-2">
+              <input
+                name="image_only"
+                type="checkbox"
+                defaultChecked={editing?.image_only ?? emptyForm.image_only}
+                className="h-4 w-4 accent-ui-fg-interactive"
+              />
+              A imagem já contém textos e botões
             </label>
 
             {editing?.image_url && (

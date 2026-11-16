@@ -18,6 +18,7 @@ const promoBannerSchema = z
     subtitle: z.string().trim().max(240).nullable().optional(),
     image_url: z.string().url().max(2048),
     mobile_image_url: z.string().url().max(2048).nullable().optional(),
+    image_only: z.boolean().optional(),
     alt_text: z.string().trim().min(1).max(180),
     link_url: z.string().trim().max(2048).nullable().optional(),
     cta_label: z.string().trim().max(40).nullable().optional(),

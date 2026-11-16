@@ -7,6 +7,7 @@ export type PromoBanner = {
   subtitle: string | null
   image_url: string
   mobile_image_url: string | null
+  image_only: boolean
   alt_text: string
   link_url: string | null
   cta_label: string | null

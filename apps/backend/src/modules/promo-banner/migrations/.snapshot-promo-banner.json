@@ -102,6 +102,22 @@
           "enumItems": [],
           "mappedType": "text"
         },
+        "image_only": {
+          "name": "image_only",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": "false",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "boolean"
+        },
         "alt_text": {
           "name": "alt_text",
           "type": "text",

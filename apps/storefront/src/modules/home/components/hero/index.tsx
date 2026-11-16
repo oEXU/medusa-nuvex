@@ -3,6 +3,7 @@ import { listFeaturedProductPlacements } from "@lib/data/featured-products"
 import { listProducts } from "@lib/data/products"
 import type { HttpTypes } from "@medusajs/types"
 import FeaturedCategoryProduct from "@modules/home/components/featured-category-product"
+import RotatingHeadline from "@modules/home/components/hero/rotating-headline"
 import { listPromoBanners } from "@lib/data/promo-banners"
 import PromoBannerCarousel from "@modules/layout/components/promo-banner-carousel"
 import {
@@ -152,18 +153,7 @@ export default async function Hero({
             <p className="mb-4 text-xs font-semibold uppercase tracking-[0.3em] text-white/45">
               {translate(countryCode, "nextLevel")}
             </p>
-            <h1 className="max-w-[13ch] text-5xl font-semibold leading-[1.05] tracking-[-0.05em] small:text-7xl">
-              {translate(countryCode, "nextPhase")
-                .split(" ")
-                .slice(0, 2)
-                .join(" ")}
-              <span className="mt-1 block pb-2 bg-gradient-to-r from-pink-300 via-fuchsia-400 to-violet-400 bg-clip-text text-transparent">
-                {translate(countryCode, "nextPhase")
-                  .split(" ")
-                  .slice(2)
-                  .join(" ")}
-              </span>
-            </h1>
+            <RotatingHeadline countryCode={countryCode} />
             <p className="mt-6 max-w-xl text-base leading-7 text-slate-300/75 small:text-lg">
               {translate(countryCode, "heroDescription")}
             </p>

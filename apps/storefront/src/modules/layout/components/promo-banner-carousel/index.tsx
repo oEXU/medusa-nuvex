@@ -147,7 +147,7 @@ const PromoBannerCarousel = ({ banners }: { banners: PromoBanner[] }) => {
                   aria-label={`${index + 1} de ${banners.length}: ${banner.title}`}
                   className="relative h-full w-full shrink-0 overflow-hidden"
                 >
-                  {/* @ts-ignore */}
+                  {/* @ts-expect-error The selected wrapper receives different props for Link and div. */}
                   <ContentWrapper {...wrapperProps}>
                     {/* Imagem do Banner - Desktop e Padrão */}
                     <div className="absolute inset-0 h-full w-full overflow-hidden">
@@ -178,48 +178,53 @@ const PromoBannerCarousel = ({ banners }: { banners: PromoBanner[] }) => {
                       )}
                     </div>
 
-                    {/* Overlay inteligente gamer: não apaga a arte, preserva contraste das legendas */}
-                    <div
-                      aria-hidden="true"
-                      className="absolute inset-0 bg-gradient-to-t from-[#090614]/90 via-[#090614]/40 to-transparent sm:bg-gradient-to-r sm:from-[#090614]/85 sm:via-[#090614]/30 sm:to-transparent"
-                    />
+                    {!banner.image_only && (
+                      <div
+                        aria-hidden="true"
+                        className="absolute inset-0 bg-gradient-to-t from-[#090614]/90 via-[#090614]/40 to-transparent sm:bg-gradient-to-r sm:from-[#090614]/85 sm:via-[#090614]/30 sm:to-transparent"
+                      />
+                    )}
 
                     {/* Borda interna com brilho sutil ao passar o cursor */}
-                    <div
-                      aria-hidden="true"
-                      className="pointer-events-none absolute inset-0 rounded-2xl sm:rounded-3xl border border-white/0 transition-colors duration-300 group-hover/slide:border-pink-500/30"
-                    />
+                    {!banner.image_only && (
+                      <div
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-0 rounded-2xl sm:rounded-3xl border border-white/0 transition-colors duration-300 group-hover/slide:border-pink-500/30"
+                      />
+                    )}
 
                     {/* Conteúdo textual e Call-To-Action */}
-                    <div className="absolute inset-x-0 bottom-0 flex flex-col items-start justify-end p-5 text-white sm:inset-y-0 sm:left-0 sm:max-w-[62%] sm:justify-center sm:p-10 md:p-14">
-                      {/* Badge Neon de Categoria */}
-                      <span className="mb-2 inline-flex items-center gap-1.5 rounded-full border border-pink-400/40 bg-pink-500/20 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-pink-200 backdrop-blur-md shadow-[0_0_12px_rgba(236,72,153,0.35)] sm:mb-3 sm:text-xs">
-                        <span className="h-1.5 w-1.5 rounded-full bg-pink-400 animate-pulse" />
-                        {bannerTypeLabels[banner.type]}
-                      </span>
+                    {!banner.image_only && (
+                      <div className="absolute inset-x-0 bottom-0 flex flex-col items-start justify-end p-5 text-white sm:inset-y-0 sm:left-0 sm:max-w-[62%] sm:justify-center sm:p-10 md:p-14">
+                        {/* Badge Neon de Categoria */}
+                        <span className="mb-2 inline-flex items-center gap-1.5 rounded-full border border-pink-400/40 bg-pink-500/20 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-pink-200 backdrop-blur-md shadow-[0_0_12px_rgba(236,72,153,0.35)] sm:mb-3 sm:text-xs">
+                          <span className="h-1.5 w-1.5 rounded-full bg-pink-400 animate-pulse" />
+                          {bannerTypeLabels[banner.type]}
+                        </span>
 
-                      {/* Título de Impacto com Sombra de Alta Legibilidade */}
-                      <h2 className="line-clamp-2 text-xl font-black leading-tight tracking-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)] xs:text-2xl sm:text-4xl md:text-5xl">
-                        {banner.title}
-                      </h2>
+                        {/* Título de Impacto com Sombra de Alta Legibilidade */}
+                        <h2 className="line-clamp-2 text-xl font-black leading-tight tracking-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)] xs:text-2xl sm:text-4xl md:text-5xl">
+                          {banner.title}
+                        </h2>
 
-                      {/* Subtítulo Discreto e Elegante */}
-                      {banner.subtitle && (
-                        <p className="mt-1.5 line-clamp-2 max-w-lg text-xs leading-relaxed text-slate-200/90 drop-shadow-[0_1px_6px_rgba(0,0,0,0.9)] sm:mt-3 sm:text-sm md:text-base">
-                          {banner.subtitle}
-                        </p>
-                      )}
+                        {/* Subtítulo Discreto e Elegante */}
+                        {banner.subtitle && (
+                          <p className="mt-1.5 line-clamp-2 max-w-lg text-xs leading-relaxed text-slate-200/90 drop-shadow-[0_1px_6px_rgba(0,0,0,0.9)] sm:mt-3 sm:text-sm md:text-base">
+                            {banner.subtitle}
+                          </p>
+                        )}
 
-                      {/* Botão de Ação / CTA estilizado */}
-                      {banner.link_url && (
-                        <div className="mt-3.5 sm:mt-6">
-                          <span className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-pink-600 via-fuchsia-600 to-purple-600 px-4 py-2 text-xs font-bold text-white shadow-[0_0_20px_rgba(236,72,153,0.45)] transition-all duration-300 group-hover/slide:shadow-[0_0_30px_rgba(236,72,153,0.7)] group-hover/slide:scale-[1.03] sm:px-6 sm:py-3 sm:text-sm">
-                            {banner.cta_label || "Conferir"}
-                            <ArrowIcon direction="right" className="h-4 w-4" />
-                          </span>
-                        </div>
-                      )}
-                    </div>
+                        {/* Botão de Ação / CTA estilizado */}
+                        {banner.link_url && (
+                          <div className="mt-3.5 sm:mt-6">
+                            <span className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-pink-600 via-fuchsia-600 to-purple-600 px-4 py-2 text-xs font-bold text-white shadow-[0_0_20px_rgba(236,72,153,0.45)] transition-all duration-300 group-hover/slide:shadow-[0_0_30px_rgba(236,72,153,0.7)] group-hover/slide:scale-[1.03] sm:px-6 sm:py-3 sm:text-sm">
+                              {banner.cta_label || "Conferir"}
+                              <ArrowIcon direction="right" className="h-4 w-4" />
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </ContentWrapper>
                 </article>
               )

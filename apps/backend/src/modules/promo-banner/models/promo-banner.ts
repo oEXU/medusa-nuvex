@@ -7,6 +7,7 @@ const PromoBanner = model.define("promo_banner", {
   subtitle: model.text().nullable(),
   image_url: model.text(),
   mobile_image_url: model.text().nullable(),
+  image_only: model.boolean().default(false),
   alt_text: model.text(),
   link_url: model.text().nullable(),
   cta_label: model.text().nullable(),
