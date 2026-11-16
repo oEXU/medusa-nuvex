@@ -41,10 +41,15 @@ const addLineItem = async (
   regionId: string,
   variantId: string,
   quantity: number,
+  mediaType?: "physical" | "digital",
 ) => {
   const id =
     cartId ?? (await sdk.store.cart.create({ region_id: regionId })).cart.id
-  await sdk.store.cart.createLineItem(id, { variant_id: variantId, quantity })
+  await sdk.store.cart.createLineItem(id, {
+    variant_id: variantId,
+    quantity,
+    ...(mediaType ? { metadata: { media_type: mediaType } } : {}),
+  })
   return id
 }
 
@@ -67,6 +72,9 @@ export async function POST(
     Math.max(parseInt(form.get("quantity")?.toString() ?? "1", 10) || 1, 1),
     MAX_LINE_ITEM_QUANTITY,
   )
+  const mediaType = form.get("media_type")?.toString()
+  const selectedMediaType =
+    mediaType === "physical" || mediaType === "digital" ? mediaType : undefined
 
   let variantId: string | undefined
   try {
@@ -81,14 +89,26 @@ export async function POST(
   const existingCartId = await getCartId()
   let cartId: string
   try {
-    cartId = await addLineItem(existingCartId, region.id, variantId, quantity)
+    cartId = await addLineItem(
+      existingCartId,
+      region.id,
+      variantId,
+      quantity,
+      selectedMediaType,
+    )
   } catch (error) {
     if (!existingCartId) {
       return new NextResponse(errorMessage(error), { status: 400 })
     }
     // The stored cart may be completed or belong to another region.
     try {
-      cartId = await addLineItem(undefined, region.id, variantId, quantity)
+      cartId = await addLineItem(
+        undefined,
+        region.id,
+        variantId,
+        quantity,
+        selectedMediaType,
+      )
     } catch (retryError) {
       return new NextResponse(errorMessage(retryError), { status: 400 })
     }

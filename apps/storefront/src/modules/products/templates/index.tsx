@@ -1,6 +1,6 @@
 import React, { Suspense } from "react"
 
-import VariantImageGallery from "@modules/products/components/image-gallery/variant-image-gallery"
+import ProductImageGallery from "@modules/products/components/image-gallery/product-image-gallery"
 import ProductActions from "@modules/products/components/product-actions"
 import ProductOnboardingCta from "@modules/products/components/product-onboarding-cta"
 import ProductTabs from "@modules/products/components/product-tabs"
@@ -36,7 +36,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           <ProductTabs product={product} />
         </div>
         <div className="block w-full relative">
-          <VariantImageGallery product={product} />
+          <ProductImageGallery product={product} />
         </div>
         <div className="flex flex-col small:sticky small:top-48 small:py-0 small:max-w-[300px] w-full py-8 gap-y-12">
           <ProductOnboardingCta />

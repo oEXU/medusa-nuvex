@@ -1,8 +1,9 @@
 "use client"
 
 import { Table, Text, clx } from "@modules/common/components/ui"
-import { updateLineItem } from "@lib/data/cart"
+import { updateLineItem, updateLineItemMediaType } from "@lib/data/cart"
 import { HttpTypes } from "@medusajs/types"
+import type { CartMediaType } from "@lib/util/cart-media"
 import CartItemSelect from "@modules/cart/components/cart-item-select"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import DeleteButton from "@modules/common/components/delete-button"
@@ -13,6 +14,7 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import Spinner from "@modules/common/icons/spinner"
 import Thumbnail from "@modules/products/components/thumbnail"
 import { useState } from "react"
+import { useParams } from "next/navigation"
 
 type ItemProps = {
   item: HttpTypes.StoreCartLineItem
@@ -23,6 +25,19 @@ type ItemProps = {
 const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
   const [updating, setUpdating] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [updatingMediaType, setUpdatingMediaType] = useState(false)
+  const [mediaTypeError, setMediaTypeError] = useState<string | null>(null)
+  const { countryCode } = useParams<{ countryCode: string }>()
+  const storedMediaType = item.metadata?.media_type
+  const productSupportsMediaChoices =
+    item.product?.metadata?.media_fisica_digital === true
+  const supportsMediaChoices =
+    productSupportsMediaChoices ||
+    storedMediaType === "physical" ||
+    storedMediaType === "digital"
+  const mediaType: CartMediaType =
+    storedMediaType === "digital" ? "digital" : "physical"
+  const isEnglish = countryCode === "us"
 
   const changeQuantity = async (quantity: number) => {
     setError(null)
@@ -37,6 +52,26 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
       })
       .finally(() => {
         setUpdating(false)
+      })
+  }
+
+  const changeMediaType = async (nextMediaType: CartMediaType) => {
+    if (!supportsMediaChoices || nextMediaType === mediaType) {
+      return
+    }
+
+    setMediaTypeError(null)
+    setUpdatingMediaType(true)
+
+    await updateLineItemMediaType({
+      lineId: item.id,
+      mediaType: nextMediaType,
+    })
+      .catch((err) => {
+        setMediaTypeError(err.message)
+      })
+      .finally(() => {
+        setUpdatingMediaType(false)
       })
   }
 
@@ -69,6 +104,49 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
         >
           {item.product_title}
         </Text>
+        {supportsMediaChoices && (
+          <div className="mt-2">
+            {type === "full" ? (
+              <label className="flex items-center gap-2 text-sm text-ui-fg-subtle">
+                <span>{isEnglish ? "Format" : "Formato"}:</span>
+                <select
+                  value={mediaType}
+                  onChange={(event) => {
+                    const value = event.target.value
+                    if (value === "physical" || value === "digital") {
+                      changeMediaType(value)
+                    }
+                  }}
+                  disabled={updatingMediaType}
+                  className="rounded-lg border border-ui-border-base bg-white px-3 py-2 text-ui-fg-base disabled:opacity-50"
+                  aria-label={isEnglish ? "Media format" : "Formato de mídia"}
+                  data-testid="cart-item-media-type"
+                >
+                  <option value="physical">
+                    {isEnglish ? "Physical" : "Física"}
+                  </option>
+                  <option value="digital">Digital</option>
+                </select>
+                {updatingMediaType && <Spinner />}
+              </label>
+            ) : (
+              <Text className="text-small-regular text-ui-fg-subtle">
+                {isEnglish ? "Format" : "Formato"}:{" "}
+                {mediaType === "digital"
+                  ? "Digital"
+                  : isEnglish
+                    ? "Physical"
+                    : "Física"}
+              </Text>
+            )}
+            {type === "full" && (
+              <ErrorMessage
+                error={mediaTypeError}
+                data-testid="cart-item-media-type-error"
+              />
+            )}
+          </div>
+        )}
         <LineItemOptions variant={item.variant} data-testid="product-variant" />
       </Table.Cell>
 

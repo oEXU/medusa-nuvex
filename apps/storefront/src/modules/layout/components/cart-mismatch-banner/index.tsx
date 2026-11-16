@@ -4,27 +4,43 @@ import { transferCart } from "@lib/data/customer"
 import { ExclamationCircleSolid } from "@medusajs/icons"
 import { StoreCart, StoreCustomer } from "@medusajs/types"
 import { Button } from "@modules/common/components/ui"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 function CartMismatchBanner(props: {
   customer: StoreCustomer
   cart: StoreCart
 }) {
   const { customer, cart } = props
+  const router = useRouter()
   const [isPending, setIsPending] = useState(false)
   const [actionText, setActionText] = useState("Run transfer again")
+  const [error, setError] = useState<string | null>(null)
 
   if (!customer || !!cart.customer_id) {
     return
   }
 
   const handleSubmit = async () => {
+    if (isPending) {
+      return
+    }
+
+    setError(null)
     try {
       setIsPending(true)
       setActionText("Transferring..")
 
       await transferCart()
-    } catch {
+      setActionText("Transfer complete")
+      router.refresh()
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "The cart could not be transferred. Try again."
+      )
       setActionText("Run transfer again")
+    } finally {
       setIsPending(false)
     }
   }
@@ -48,6 +64,11 @@ function CartMismatchBanner(props: {
         >
           {actionText}
         </Button>
+        {error && (
+          <span className="text-orange-950" role="alert">
+            {error}
+          </span>
+        )}
       </div>
     </div>
   )

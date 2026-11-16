@@ -17,8 +17,10 @@ type MobileActionsProps = {
   options: Record<string, string | undefined>
   updateOptions: (title: string, value: string) => void
   inStock?: boolean
+  hasPrice: boolean
   handleAddToCart: () => void
   isAdding?: boolean
+  addError?: string | null
   show: boolean
   optionsDisabled: boolean
 }
@@ -29,8 +31,10 @@ const MobileActions: React.FC<MobileActionsProps> = ({
   options,
   updateOptions,
   inStock,
+  hasPrice,
   handleAddToCart,
   isAdding,
+  addError,
   show,
   optionsDisabled,
 }) => {
@@ -120,18 +124,34 @@ const MobileActions: React.FC<MobileActionsProps> = ({
               <Button
                 type="button"
                 onClick={handleAddToCart}
-                disabled={!inStock || !variant}
+                disabled={!inStock || !variant || !hasPrice}
                 className="w-full"
                 isLoading={isAdding}
                 data-testid="mobile-cart-button"
               >
                 {!variant
                   ? "Select variant"
+                  : !hasPrice
+                  ? "Price unavailable"
                   : !inStock
                   ? "Out of stock"
                   : "Add to cart"}
               </Button>
             </div>
+            {variant && !hasPrice && (
+              <p
+                className="text-small-regular text-ui-fg-error"
+                role="alert"
+              >
+                This variant has no price for the selected region. Add a price
+                in the Admin to sell it.
+              </p>
+            )}
+            {addError && (
+              <p className="text-small-regular text-ui-fg-error" role="alert">
+                {addError}
+              </p>
+            )}
           </div>
         </Transition>
       </div>

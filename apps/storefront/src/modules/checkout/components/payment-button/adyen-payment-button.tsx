@@ -36,7 +36,7 @@ const AdyenPaymentButton = ({
 }: AdyenPaymentButtonProps) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const { countryCode } = useParams()
+  const { countryCode } = useParams<{ countryCode: string }>()
 
   const session = cart.payment_collection?.payment_sessions?.find((s) =>
     isAdyen(s.provider_id)
@@ -75,7 +75,9 @@ const AdyenPaymentButton = ({
         clientKey,
         environment,
         locale: "en-US",
-        countryCode: cart.billing_address?.country_code?.toUpperCase(),
+        countryCode:
+          cart.billing_address?.country_code?.toUpperCase() ??
+          String(countryCode).toUpperCase(),
         amount: {
           value: session.data?.amount as number,
           currency: session.data?.currency as string,
@@ -85,20 +87,28 @@ const AdyenPaymentButton = ({
         onSubmit: async (state, _component, actions) => {
           setErrorMessage(null)
           handleResult(
-            await submitAdyenPayment({
-              payment_method: state.data.paymentMethod,
-              browser_info: state.data.browserInfo,
-              store_payment_method: state.data.storePaymentMethod,
-              origin: window.location.origin,
-              // Used when the shopper's bank redirects them for authentication.
-              return_url: `${window.location.origin}/api/payment-return?cart_id=${cart.id}&country_code=${countryCode}`,
-            }),
+            await submitAdyenPayment(
+              {
+                payment_method: state.data.paymentMethod,
+                browser_info: state.data.browserInfo,
+                store_payment_method: state.data.storePaymentMethod,
+                origin: window.location.origin,
+                // Used when the shopper's bank redirects them for authentication.
+                return_url: `${window.location.origin}/api/payment-return?cart_id=${cart.id}&country_code=${countryCode}`,
+              },
+              undefined,
+              String(countryCode),
+            ),
             actions
           )
         },
         onAdditionalDetails: async (state, _component, actions) => {
           handleResult(
-            await submitAdyenPayment({ details: state.data.details }),
+            await submitAdyenPayment(
+              { details: state.data.details },
+              undefined,
+              countryCode
+            ),
             actions
           )
         },

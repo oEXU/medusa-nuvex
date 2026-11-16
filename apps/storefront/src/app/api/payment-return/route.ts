@@ -32,7 +32,11 @@ export async function GET(req: NextRequest) {
 
     try {
       // Redirects to the order confirmation once the payment is authorized.
-      await submitAdyenPayment({ details: { redirectResult } }, cartId)
+      await submitAdyenPayment(
+        { details: { redirectResult } },
+        cartId,
+        countryCode ?? undefined,
+      )
     } catch (error) {
       unstable_rethrow(error)
     }
@@ -91,7 +95,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    await placeOrder(cartId)
+    await placeOrder(cartId, countryCode ?? undefined)
   } catch (error) {
     unstable_rethrow(error)
 

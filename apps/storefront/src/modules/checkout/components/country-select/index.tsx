@@ -22,15 +22,38 @@ const CountrySelect = forwardRef<
   )
 
   const countryOptions = useMemo(() => {
-    if (!region) {
+    const countries = region?.countries ?? []
+
+    if (countries?.length) {
+      return countries
+        .flatMap((country) =>
+          country.iso_2
+            ? [
+                {
+                  value: country.iso_2,
+                  label:
+                    country.display_name || country.iso_2.toUpperCase(),
+                },
+              ]
+            : []
+        )
+        .sort((a, b) => a.label.localeCompare(b.label))
+    }
+
+    const fallbackCode = countryCode?.toLowerCase()
+
+    if (!fallbackCode) {
       return []
     }
 
-    return region.countries?.map((country) => ({
-      value: country.iso_2,
-      label: country.display_name,
-    }))
-  }, [region])
+    const locale = countryCode === "us" ? "en-US" : "pt-BR"
+    const fallbackLabel =
+      new Intl.DisplayNames([locale], { type: "region" }).of(
+        fallbackCode.toUpperCase()
+      ) ?? fallbackCode.toUpperCase()
+
+    return [{ value: fallbackCode, label: fallbackLabel }]
+  }, [countryCode, region])
 
   return (
     <NativeSelect

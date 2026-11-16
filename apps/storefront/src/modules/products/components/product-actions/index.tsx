@@ -46,7 +46,10 @@ export default function ProductActions({
   )
   const [isUrlVariantApplied, setIsUrlVariantApplied] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
+  const [addError, setAddError] = useState<string | null>(null)
   const countryCode = useParams().countryCode as string
+  const supportsMediaChoices =
+    product.metadata?.media_fisica_digital === true
 
   const selectedVariant = useMemo(() => {
     if (!product.variants || product.variants.length === 0) {
@@ -61,6 +64,7 @@ export default function ProductActions({
 
   // update the options when a variant is selected
   const setOptionValue = (optionId: string, value: string) => {
+    setAddError(null)
     setOptions((prev) => ({
       ...prev,
       [optionId]: value,
@@ -109,6 +113,8 @@ export default function ProductActions({
     () => isVariantInStock(selectedVariant),
     [selectedVariant]
   )
+  const hasSelectedPrice =
+    typeof selectedVariant?.calculated_price?.calculated_amount === "number"
 
   const actionsRef = useRef<HTMLDivElement>(null)
 
@@ -116,18 +122,28 @@ export default function ProductActions({
 
   // add the selected variant to the cart
   const handleAddToCart = async () => {
-    if (!selectedVariant?.id) return null
+    if (!selectedVariant?.id || !hasSelectedPrice) return null
 
     setIsAdding(true)
+    setAddError(null)
 
-    await addToCart({
-      variantId: selectedVariant.id,
-      quantity: 1,
-      countryCode,
-    })
-    notifyCartUpdated()
-
-    setIsAdding(false)
+    try {
+      await addToCart({
+        variantId: selectedVariant.id,
+        quantity: 1,
+        countryCode,
+        ...(supportsMediaChoices ? { mediaType: "physical" as const } : {}),
+      })
+      notifyCartUpdated()
+    } catch (error) {
+      setAddError(
+        error instanceof Error
+          ? error.message
+          : "We couldn't add this item to the cart. Please try again."
+      )
+    } finally {
+      setIsAdding(false)
+    }
   }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -150,6 +166,9 @@ export default function ProductActions({
           }}
         >
           <input type="hidden" name="product_id" value={product.id} />
+          {supportsMediaChoices && (
+            <input type="hidden" name="media_type" value="physical" />
+          )}
           <input
             type="hidden"
             name="variant_id"
@@ -180,6 +199,11 @@ export default function ProductActions({
           </div>
 
           <ProductPrice product={product} variant={selectedVariant} />
+          {addError && (
+            <p className="text-small-regular text-ui-fg-error" role="alert">
+              {addError}
+            </p>
+          )}
 
           {selectedVariant && isValidVariant && (
             <p
@@ -194,6 +218,7 @@ export default function ProductActions({
             type="submit"
             disabled={
               !inStock ||
+              !hasSelectedPrice ||
               !selectedVariant ||
               !!disabled ||
               isAdding ||
@@ -206,6 +231,8 @@ export default function ProductActions({
           >
             {!selectedVariant
               ? "Select variant"
+              : !hasSelectedPrice
+              ? "Price unavailable"
               : !inStock || !isValidVariant
               ? "Out of stock"
               : "Add to cart"}
@@ -217,8 +244,10 @@ export default function ProductActions({
           options={options}
           updateOptions={setOptionValue}
           inStock={inStock}
+          hasPrice={hasSelectedPrice}
           handleAddToCart={handleAddToCart}
           isAdding={isAdding}
+          addError={addError}
           show={!inView}
           optionsDisabled={!!disabled || isAdding}
         />

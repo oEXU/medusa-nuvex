@@ -18,7 +18,11 @@ export default function ProductPrice({
   const selectedPrice = variant ? variantPrice : cheapestPrice
 
   if (!selectedPrice) {
-    return <div className="block w-32 h-9 bg-gray-100 animate-pulse" />
+    return (
+      <p className="text-small-regular text-ui-fg-error" role="status">
+        No price is available for this variant in the selected region.
+      </p>
+    )
   }
 
   return (

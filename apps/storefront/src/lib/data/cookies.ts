@@ -1,5 +1,6 @@
 import "server-only"
 import { cookies as nextCookies } from "next/headers"
+import { revalidateTag } from "next/cache"
 
 export const getAuthHeaders = async (): Promise<
   { authorization: string } | Record<string, never>
@@ -30,6 +31,14 @@ export const getCacheTag = async (tag: string): Promise<string> => {
     return `${tag}-${cacheId}`
   } catch {
     return ""
+  }
+}
+
+export const revalidateCacheTag = async (tag: string) => {
+  const cacheTag = await getCacheTag(tag)
+
+  if (cacheTag) {
+    revalidateTag(cacheTag, { expire: 0 })
   }
 }
 

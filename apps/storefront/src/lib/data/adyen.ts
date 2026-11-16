@@ -43,7 +43,8 @@ const getAdyenSession = async (cartId: string) => {
  */
 export async function submitAdyenPayment(
   clientData: Record<string, unknown>,
-  cartId?: string
+  cartId?: string,
+  countryCode?: string
 ): Promise<AdyenPaymentResult> {
   const id = cartId || (await getCartId())
   const current = id ? await getAdyenSession(id) : undefined
@@ -61,7 +62,7 @@ export async function submitAdyenPayment(
       { ...(await getAuthHeaders()) }
     )
 
-    await placeOrder(id)
+    await placeOrder(id, countryCode)
   } catch (error) {
     unstable_rethrow(error)
   }

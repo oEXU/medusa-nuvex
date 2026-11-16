@@ -32,7 +32,9 @@ const AddressSelect = ({
   }
 
   const selectedAddress = useMemo(() => {
-    return addresses.find((a) => addressInput && compareAddresses(a, addressInput))
+    return addresses.find(
+      (a) => addressInput && compareAddresses(a, addressInput)
+    )
   }, [addresses, addressInput])
 
   return (
@@ -84,11 +86,6 @@ const AddressSelect = ({
                       <span className="text-left text-base-semi">
                         {address.first_name} {address.last_name}
                       </span>
-                      {address.company && (
-                        <span className="text-small-regular text-ui-fg-base">
-                          {address.company}
-                        </span>
-                      )}
                       <div className="flex flex-col text-left text-base-regular mt-2">
                         <span>
                           {address.address_1}

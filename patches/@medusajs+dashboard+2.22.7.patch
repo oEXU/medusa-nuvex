@@ -1,0 +1,126 @@
+diff --git a/node_modules/@medusajs/dashboard/src/routes/products/product-create/utils.ts b/node_modules/@medusajs/dashboard/src/routes/products/product-create/utils.ts
+index 5c235c8..dbb911a 100644
+--- a/node_modules/@medusajs/dashboard/src/routes/products/product-create/utils.ts
++++ b/node_modules/@medusajs/dashboard/src/routes/products/product-create/utils.ts
+@@ -5,5 +5,6 @@ export const normalizeProductFormValues = (
+   values: ProductCreateSchemaType & {
+     status: HttpTypes.AdminProductStatus
+     regionsCurrencyMap: Record<string, string>
++    additional_data?: Record<string, unknown>
+   }
+ ): HttpTypes.AdminCreateProduct => {
+@@ -14,6 +15,7 @@ export const normalizeProductFormValues = (
+   return {
+     status: values.status,
+     is_giftcard: false,
++    metadata: values.additional_data?.media_fisica_digital === true ? { media_fisica_digital: true } : undefined,
+     tags: values?.tags?.length
+       ? values.tags?.map((tag) => ({ id: tag }))
+       : undefined,
+diff --git a/node_modules/@medusajs/dashboard/dist/app.js b/node_modules/@medusajs/dashboard/dist/app.js
+index 7ae7fe6..de01a03 100644
+--- a/node_modules/@medusajs/dashboard/dist/app.js
++++ b/node_modules/@medusajs/dashboard/dist/app.js
+@@ -163854,6 +163854,7 @@ var init_utils3 = __esm({
+       return {
+         status: values.status,
+         is_giftcard: false,
++        metadata: values.additional_data?.media_fisica_digital === true ? { media_fisica_digital: true } : void 0,
+         tags: values?.tags?.length ? values.tags?.map((tag) => ({ id: tag })) : void 0,
+         sales_channels: values?.sales_channels?.length ? values.sales_channels?.map((sc) => ({ id: sc.id })) : void 0,
+         images,
+diff --git a/node_modules/@medusajs/dashboard/dist/chunk-CMCUXBOL.mjs b/node_modules/@medusajs/dashboard/dist/chunk-CMCUXBOL.mjs
+--- a/node_modules/@medusajs/dashboard/dist/chunk-CMCUXBOL.mjs
++++ b/node_modules/@medusajs/dashboard/dist/chunk-CMCUXBOL.mjs
+@@ -23,4 +23,5 @@ var normalizeProductFormValues = (values) => {
+     status: values.status,
+     is_giftcard: false,
++    metadata: values.additional_data?.media_fisica_digital === true ? { media_fisica_digital: true } : void 0,
+     tags: values?.tags?.length ? values.tags?.map((tag) => ({ id: tag })) : void 0,
+     sales_channels: values?.sales_channels?.length ? values.sales_channels?.map((sc) => ({ id: sc.id })) : void 0,
+diff --git a/node_modules/@medusajs/dashboard/src/routes/products/product-edit/components/edit-product-form/edit-product-form.tsx b/node_modules/@medusajs/dashboard/src/routes/products/product-edit/components/edit-product-form/edit-product-form.tsx
+--- a/node_modules/@medusajs/dashboard/src/routes/products/product-edit/components/edit-product-form/edit-product-form.tsx
++++ b/node_modules/@medusajs/dashboard/src/routes/products/product-edit/components/edit-product-form/edit-product-form.tsx
+@@ -55,7 +55,14 @@ export const EditProductForm = ({ product }: EditProductFormProps) => {
+   const { mutateAsync, isPending } = useUpdateProduct(product.id)
+ 
+   const handleSubmit = form.handleSubmit(async (data) => {
+-    const { title, discountable, handle, status, ...optional } = data
++    const {
++      title,
++      discountable,
++      handle,
++      status,
++      additional_data,
++      ...optional
++    } = data
+ 
+     const nullableData = transformNullableFormData(optional)
+ 
+@@ -67,5 +74,11 @@ export const EditProductForm = ({ product }: EditProductFormProps) => {
+         status: status as HttpTypes.AdminProductStatus,
+         ...nullableData,
++        metadata: {
++          ...(product.metadata ?? {}),
++          ...(typeof additional_data?.media_fisica_digital === "boolean"
++            ? { media_fisica_digital: additional_data.media_fisica_digital }
++            : {}),
++        },
+       },
+       {
+         onSuccess: ({ product }) => {
+diff --git a/node_modules/@medusajs/dashboard/dist/product-edit-YPNSD6O3.mjs b/node_modules/@medusajs/dashboard/dist/product-edit-YPNSD6O3.mjs
+--- a/node_modules/@medusajs/dashboard/dist/product-edit-YPNSD6O3.mjs
++++ b/node_modules/@medusajs/dashboard/dist/product-edit-YPNSD6O3.mjs
+@@ -133,12 +133,25 @@ var EditProductForm = ({ product }) => {
+   const handleSubmit = form.handleSubmit(async (data) => {
+-    const { title, discountable, handle, status, ...optional } = data;
++    const {
++      title,
++      discountable,
++      handle,
++      status,
++      additional_data,
++      ...optional
++    } = data;
+     const nullableData = transformNullableFormData(optional);
+     await mutateAsync(
+       {
+         title,
+         discountable,
+         handle,
+         status,
+-        ...nullableData
++        ...nullableData,
++        metadata: {
++          ...(product.metadata ?? {}),
++          ...(typeof additional_data?.media_fisica_digital === "boolean"
++            ? { media_fisica_digital: additional_data.media_fisica_digital }
++            : {})
++        }
+       },
+       {
+diff --git a/node_modules/@medusajs/dashboard/dist/app.js b/node_modules/@medusajs/dashboard/dist/app.js
+index de01a03..831cbd1 100644
+--- a/node_modules/@medusajs/dashboard/dist/app.js
++++ b/node_modules/@medusajs/dashboard/dist/app.js
+@@ -175399,11 +175399,17 @@ var init_edit_product_form = __esm({
+-        const { title, discountable, handle, status, ...optional } = data;
++        const { title, discountable, handle, status, additional_data, ...optional } = data;
+         const nullableData = transformNullableFormData(optional);
+         await mutateAsync(
+           {
+             title,
+             discountable,
+             handle,
+             status,
+-            ...nullableData
++            ...nullableData,
++            metadata: {
++              ...(product.metadata ?? {}),
++              ...(typeof additional_data?.media_fisica_digital === "boolean"
++                ? { media_fisica_digital: additional_data.media_fisica_digital }
++                : {})
++            }
+           },
+           {

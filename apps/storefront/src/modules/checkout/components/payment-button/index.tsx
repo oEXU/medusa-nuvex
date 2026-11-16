@@ -3,6 +3,7 @@
 import { isAdyen, isManual, isStripeLike } from "@lib/constants"
 import { placeOrder } from "@lib/data/cart"
 import { HttpTypes } from "@medusajs/types"
+import { isDigitalOnlyCart } from "@lib/util/cart-media"
 import { Button } from "@modules/common/components/ui"
 import { useElements, useStripe } from "@stripe/react-stripe-js"
 import { useParams } from "next/navigation"
@@ -20,12 +21,14 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
   cart,
   "data-testid": dataTestId,
 }) => {
+  const digitalOnly = isDigitalOnlyCart(cart)
   const notReady =
     !cart ||
-    !cart.shipping_address ||
-    !cart.billing_address ||
     !cart.email ||
-    (cart.shipping_methods?.length ?? 0) < 1
+    (!digitalOnly &&
+      (!cart.shipping_address ||
+        !cart.billing_address ||
+        (cart.shipping_methods?.length ?? 0) < 1))
 
   const paymentSession = cart.payment_collection?.payment_sessions?.[0]
 
@@ -66,9 +69,10 @@ const StripePaymentButton = ({
 }) => {
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const { countryCode } = useParams<{ countryCode: string }>()
 
   const onPaymentCompleted = async () => {
-    await placeOrder()
+    await placeOrder(undefined, countryCode)
       .catch((err) => {
         setErrorMessage(err.message)
       })
@@ -79,8 +83,6 @@ const StripePaymentButton = ({
 
   const stripe = useStripe()
   const elements = useElements()
-  const { countryCode } = useParams()
-
   const disabled = !stripe || !elements ? true : false
 
   const handlePayment = async () => {
@@ -97,20 +99,27 @@ const StripePaymentButton = ({
           return_url: `${window.location.origin}/api/payment-return?cart_id=${cart.id}&country_code=${countryCode}`,
           payment_method_data: {
             billing_details: {
-              name:
-                cart.billing_address?.first_name +
-                " " +
-                cart.billing_address?.last_name,
-              address: {
-                city: cart.billing_address?.city ?? undefined,
-                country: cart.billing_address?.country_code ?? undefined,
-                line1: cart.billing_address?.address_1 ?? undefined,
-                line2: cart.billing_address?.address_2 ?? undefined,
-                postal_code: cart.billing_address?.postal_code ?? undefined,
-                state: cart.billing_address?.province ?? undefined,
-              },
               email: cart.email,
-              phone: cart.billing_address?.phone ?? undefined,
+                ...(cart.billing_address
+                  ? {
+                      name: [
+                        cart.billing_address.first_name,
+                        cart.billing_address.last_name,
+                      ]
+                        .filter(Boolean)
+                        .join(" "),
+                      address: {
+                        city: cart.billing_address.city ?? undefined,
+                        country: cart.billing_address.country_code ?? undefined,
+                        line1: cart.billing_address.address_1 ?? undefined,
+                        line2: cart.billing_address.address_2 ?? undefined,
+                        postal_code:
+                          cart.billing_address.postal_code ?? undefined,
+                        state: cart.billing_address.province ?? undefined,
+                      },
+                      phone: cart.billing_address.phone ?? undefined,
+                    }
+                  : {}),
             },
           },
         },
@@ -173,9 +182,10 @@ const StripePaymentButton = ({
 const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const { countryCode } = useParams<{ countryCode: string }>()
 
   const onPaymentCompleted = async () => {
-    await placeOrder()
+    await placeOrder(undefined, countryCode)
       .catch((err) => {
         setErrorMessage(err.message)
       })

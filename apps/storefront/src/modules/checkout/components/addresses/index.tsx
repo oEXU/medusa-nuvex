@@ -6,7 +6,6 @@ import { CheckCircleSolid } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
 import Divider from "@modules/common/components/divider"
 import { Heading, Text } from "@modules/common/components/ui"
-import Spinner from "@modules/common/icons/spinner"
 import {
   useParams,
   usePathname,
@@ -32,7 +31,8 @@ const Addresses = ({
   const pathname = usePathname()
   const { countryCode } = useParams<{ countryCode: string }>()
 
-  const isOpen = searchParams.get("step") === "address"
+  const isOpen =
+    searchParams.get("step") === "address" || !cart?.shipping_address
 
   const { state: sameAsBilling, toggle: toggleSameAsBilling } = useToggleState(
     cart?.shipping_address && cart?.billing_address
@@ -47,20 +47,32 @@ const Addresses = ({
   const [message, formAction] = useActionState(setAddresses, null)
 
   return (
-    <div className="bg-white">
-      <div className="flex flex-row items-center justify-between mb-6">
-        <Heading
-          level="h2"
-          className="flex flex-row text-3xl-regular gap-x-2 items-baseline"
-        >
-          {translate(countryCode, "shippingAddress")}
-          {!isOpen && <CheckCircleSolid />}
-        </Heading>
+    <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
+      <div className="mb-6 flex flex-row items-start justify-between gap-4">
+        <div>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-fuchsia-700">
+            {countryCode === "us" ? "Checkout · step 1" : "Checkout · etapa 1"}
+          </p>
+          <Heading
+            level="h2"
+            className="flex flex-row items-center gap-x-2 text-2xl font-semibold tracking-tight text-slate-900"
+          >
+            {translate(countryCode, "shippingAddress")}
+            {!isOpen && <CheckCircleSolid />}
+          </Heading>
+          {isOpen && (
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
+              {countryCode === "us"
+                ? "Add your contact and delivery details to continue."
+                : "Preencha seus dados de contato e entrega para continuar."}
+            </p>
+          )}
+        </div>
         {!isOpen && cart?.shipping_address && (
           <Text>
             <button
               onClick={handleEdit}
-              className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
+              className="rounded-lg px-3 py-2 text-sm font-medium text-fuchsia-700 transition hover:bg-fuchsia-50"
               data-testid="edit-address-button"
             >
               {translate(countryCode, "edit")}
@@ -69,8 +81,8 @@ const Addresses = ({
         )}
       </div>
       {isOpen ? (
-        <form action={formAction}>
-          <div className="pb-8">
+        <form action={formAction} className="mt-7">
+          <div>
             <ShippingAddress
               customer={customer}
               checked={sameAsBilling}
@@ -79,18 +91,22 @@ const Addresses = ({
             />
 
             {!sameAsBilling && (
-              <div>
+              <section className="mt-8 border-t border-slate-200 pt-7">
                 <Heading
-                  level="h2"
-                  className="text-3xl-regular gap-x-4 pb-6 pt-8"
+                  level="h3"
+                  className="mb-4 text-lg font-semibold text-slate-900"
                 >
                   {translate(countryCode, "billingAddress")}
                 </Heading>
 
                 <BillingAddress cart={cart} />
-              </div>
+              </section>
             )}
-            <SubmitButton className="mt-6" data-testid="submit-address-button">
+            <SubmitButton
+              size="large"
+              className="mt-7 w-full sm:w-auto sm:min-w-64"
+              data-testid="submit-address-button"
+            >
               {translate(countryCode, "continueDelivery")}
             </SubmitButton>
             <ErrorMessage error={message} data-testid="address-error-message" />
@@ -100,91 +116,85 @@ const Addresses = ({
         <div>
           <div className="text-small-regular">
             {cart && cart.shipping_address ? (
-              <div className="flex items-start gap-x-8">
-                <div className="flex items-start gap-x-1 w-full">
-                  <div
-                    className="flex flex-col w-1/3"
-                    data-testid="shipping-address-summary"
-                  >
-                    <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                      {translate(countryCode, "shippingAddress")}
-                    </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
-                      {cart.shipping_address.first_name}{" "}
-                      {cart.shipping_address.last_name}
-                    </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
-                      {cart.shipping_address.address_1}{" "}
-                      {cart.shipping_address.address_2}
-                    </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
-                      {cart.shipping_address.postal_code},{" "}
-                      {cart.shipping_address.city}
-                    </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
-                      {cart.shipping_address.country_code?.toUpperCase()}
-                    </Text>
-                  </div>
+              <div className="grid w-full grid-cols-1 gap-5 sm:grid-cols-3">
+                <div
+                  className="flex min-w-0 flex-col"
+                  data-testid="shipping-address-summary"
+                >
+                  <Text className="txt-medium-plus text-ui-fg-base mb-1">
+                    {translate(countryCode, "shippingAddress")}
+                  </Text>
+                  <Text className="txt-medium text-ui-fg-subtle">
+                    {cart.shipping_address.first_name}{" "}
+                    {cart.shipping_address.last_name}
+                  </Text>
+                  <Text className="txt-medium text-ui-fg-subtle">
+                    {cart.shipping_address.address_1}{" "}
+                    {cart.shipping_address.address_2}
+                  </Text>
+                  <Text className="txt-medium text-ui-fg-subtle">
+                    {cart.shipping_address.postal_code},{" "}
+                    {cart.shipping_address.city}
+                  </Text>
+                  <Text className="txt-medium text-ui-fg-subtle">
+                    {cart.shipping_address.country_code?.toUpperCase()}
+                  </Text>
+                </div>
 
-                  <div
-                    className="flex flex-col w-1/3 "
-                    data-testid="shipping-contact-summary"
-                  >
-                    <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                      {translate(countryCode, "contactLabel")}
-                    </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
-                      {cart.shipping_address.phone}
-                    </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
-                      {cart.email}
-                    </Text>
-                  </div>
+                <div
+                  className="flex min-w-0 flex-col"
+                  data-testid="shipping-contact-summary"
+                >
+                  <Text className="txt-medium-plus text-ui-fg-base mb-1">
+                    {translate(countryCode, "contactLabel")}
+                  </Text>
+                  <Text className="txt-medium text-ui-fg-subtle">
+                    {cart.shipping_address.phone}
+                  </Text>
+                  <Text className="txt-medium text-ui-fg-subtle">
+                    {cart.email}
+                  </Text>
+                </div>
 
-                  <div
-                    className="flex flex-col w-1/3"
-                    data-testid="billing-address-summary"
-                  >
-                    <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                      {translate(countryCode, "billingAddress")}
-                    </Text>
+                <div
+                  className="flex min-w-0 flex-col"
+                  data-testid="billing-address-summary"
+                >
+                  <Text className="txt-medium-plus text-ui-fg-base mb-1">
+                    {translate(countryCode, "billingAddress")}
+                  </Text>
 
-                    {sameAsBilling ? (
+                  {sameAsBilling ? (
+                    <Text className="txt-medium text-ui-fg-subtle">
+                      {translate(countryCode, "sameBillingAddress")}
+                    </Text>
+                  ) : (
+                    <>
                       <Text className="txt-medium text-ui-fg-subtle">
-                        {translate(countryCode, "sameBillingAddress")}
+                        {cart.billing_address?.first_name}{" "}
+                        {cart.billing_address?.last_name}
                       </Text>
-                    ) : (
-                      <>
-                        <Text className="txt-medium text-ui-fg-subtle">
-                          {cart.billing_address?.first_name}{" "}
-                          {cart.billing_address?.last_name}
-                        </Text>
-                        <Text className="txt-medium text-ui-fg-subtle">
-                          {cart.billing_address?.address_1}{" "}
-                          {cart.billing_address?.address_2}
-                        </Text>
-                        <Text className="txt-medium text-ui-fg-subtle">
-                          {cart.billing_address?.postal_code},{" "}
-                          {cart.billing_address?.city}
-                        </Text>
-                        <Text className="txt-medium text-ui-fg-subtle">
-                          {cart.billing_address?.country_code?.toUpperCase()}
-                        </Text>
-                      </>
-                    )}
-                  </div>
+                      <Text className="txt-medium text-ui-fg-subtle">
+                        {cart.billing_address?.address_1}{" "}
+                        {cart.billing_address?.address_2}
+                      </Text>
+                      <Text className="txt-medium text-ui-fg-subtle">
+                        {cart.billing_address?.postal_code},{" "}
+                        {cart.billing_address?.city}
+                      </Text>
+                      <Text className="txt-medium text-ui-fg-subtle">
+                        {cart.billing_address?.country_code?.toUpperCase()}
+                      </Text>
+                    </>
+                  )}
                 </div>
               </div>
-            ) : (
-              <div>
-                <Spinner />
-              </div>
-            )}
+            ) : null}
           </div>
         </div>
       )}
       <Divider className="mt-8" />
-    </div>
+    </section>
   )
 }
 

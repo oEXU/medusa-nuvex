@@ -14,7 +14,7 @@ type VariantWithPrice = HttpTypes.StoreProductVariant & {
 }
 
 export const getPricesForVariant = (variant: VariantWithPrice) => {
-  if (!variant?.calculated_price?.calculated_amount) {
+  if (typeof variant?.calculated_price?.calculated_amount !== "number") {
     return null
   }
 

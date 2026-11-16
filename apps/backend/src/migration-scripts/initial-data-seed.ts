@@ -149,8 +149,8 @@ export default async function initial_data_seed({
         {
           name: "Main Warehouse",
           address: {
-            city: "Copenhagen",
-            country_code: "DK",
+            city: "Jundiaí",
+            country_code: "BR",
             address_1: "",
           },
         },

@@ -1,5 +1,6 @@
 import { listCartShippingMethods } from "@lib/data/fulfillment"
 import { listCartPaymentMethods } from "@lib/data/payment"
+import { isDigitalOnlyCart } from "@lib/util/cart-media"
 import { HttpTypes } from "@medusajs/types"
 import Addresses from "@modules/checkout/components/addresses"
 import Payment from "@modules/checkout/components/payment"
@@ -17,10 +18,13 @@ export default async function CheckoutForm({
     return null
   }
 
-  const shippingMethods = await listCartShippingMethods(cart.id)
-  const paymentMethods = await listCartPaymentMethods(cart.region?.id ?? "")
+  const digitalOnly = isDigitalOnlyCart(cart)
+  const [shippingMethods, paymentMethods] = await Promise.all([
+    digitalOnly ? Promise.resolve([]) : listCartShippingMethods(cart.id),
+    listCartPaymentMethods(cart.region?.id ?? ""),
+  ])
 
-  if (!shippingMethods || !paymentMethods) {
+  if ((!digitalOnly && !shippingMethods) || !paymentMethods) {
     return null
   }
 
@@ -28,7 +32,13 @@ export default async function CheckoutForm({
     <div className="w-full grid grid-cols-1 gap-y-8">
       <Addresses cart={cart} customer={customer} />
 
-      <Shipping cart={cart} availableShippingMethods={shippingMethods} />
+      <Shipping
+        key={`${digitalOnly ? "digital" : "physical"}:${
+          cart.shipping_methods?.at(-1)?.shipping_option_id ?? ""
+        }`}
+        cart={cart}
+        availableShippingMethods={shippingMethods ?? []}
+      />
 
       <Payment cart={cart} availablePaymentMethods={paymentMethods} />
 

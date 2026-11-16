@@ -15,23 +15,22 @@ const CheckoutSummary = ({
   countryCode: string
 }) => {
   return (
-    <div className="sticky top-0 flex flex-col-reverse small:flex-col gap-y-8 py-8 small:py-0 ">
-      <div className="w-full bg-white flex flex-col">
-        <Divider className="my-6 small:hidden" />
+    <aside className="sticky top-6 flex flex-col gap-y-6 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+      <div className="flex w-full flex-col">
         <Heading
           level="h2"
-          className="flex flex-row text-3xl-regular items-baseline"
+          className="flex flex-row items-baseline text-xl font-semibold text-slate-900"
         >
           {translate(countryCode, "inYourCart")}
         </Heading>
-        <Divider className="my-6" />
+        <Divider className="my-5" />
         <CartTotals totals={cart} />
         <ItemsPreviewTemplate cart={cart} />
-        <div className="my-6">
+        <div className="mt-6">
           <DiscountCode cart={cart} />
         </div>
       </div>
-    </div>
+    </aside>
   )
 }
 

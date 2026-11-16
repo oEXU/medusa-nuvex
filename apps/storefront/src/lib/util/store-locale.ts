@@ -118,6 +118,9 @@ export type TranslationKey =
   | "method"
   | "payment"
   | "paymentMethod"
+  | "paymentSetupPending"
+  | "paymentUnavailable"
+  | "paymentPending"
   | "paymentDetails"
   | "anotherStep"
   | "country"
@@ -262,6 +265,10 @@ const translations: Record<StoreLanguage, Record<TranslationKey, string>> = {
     method: "Método",
     payment: "Pagamento",
     paymentMethod: "Forma de pagamento",
+    paymentSetupPending: "Estamos preparando os pagamentos desta região.",
+    paymentUnavailable:
+      "Os métodos abaixo só poderão ser usados depois que o gateway de pagamento for configurado. Nenhuma cobrança será iniciada agora.",
+    paymentPending: "Em configuração",
     paymentDetails: "Dados de pagamento",
     anotherStep: "Uma etapa adicional será exibida",
     country: "País",
@@ -405,6 +412,10 @@ const translations: Record<StoreLanguage, Record<TranslationKey, string>> = {
     method: "Method",
     payment: "Payment",
     paymentMethod: "Payment method",
+    paymentSetupPending: "Payments for this region are being set up.",
+    paymentUnavailable:
+      "The methods below will be available after a payment gateway is configured. No charge will be initiated now.",
+    paymentPending: "Setup pending",
     paymentDetails: "Payment details",
     anotherStep: "Another step will appear",
     country: "Country",

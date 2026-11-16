@@ -1,0 +1,27 @@
+diff --git a/node_modules/@medusajs/core-flows/dist/cart/utils/fields.js b/node_modules/@medusajs/core-flows/dist/cart/utils/fields.js
+index a1af00c..d271010 100644
+--- a/node_modules/@medusajs/core-flows/dist/cart/utils/fields.js
++++ b/node_modules/@medusajs/core-flows/dist/cart/utils/fields.js
+@@ -166,6 +166,7 @@ exports.productVariantsFields = [
+     "product.id",
+     "product.title",
+     "product.description",
++    "product.metadata",
+     "product.status",
+     "product.subtitle",
+     "product.thumbnail",
+diff --git a/node_modules/@medusajs/core-flows/dist/cart/utils/prepare-line-item-data.js b/node_modules/@medusajs/core-flows/dist/cart/utils/prepare-line-item-data.js
+index 4d46be2..95c2dc1 100644
+--- a/node_modules/@medusajs/core-flows/dist/cart/utils/prepare-line-item-data.js
++++ b/node_modules/@medusajs/core-flows/dist/cart/utils/prepare-line-item-data.js
+@@ -24,6 +24,9 @@ function prepareLineItemData(data) {
+     const someInventoryRequiresShipping = !!variant?.inventory_items?.some((inventoryItem) => !!inventoryItem.inventory.requires_shipping);
+     // Note: If any of the items require shipping or product has a shipping profile set,
+     // we enable fulfillment unless explicitly set to not require shipping by the item in the request
+-    const requiresShipping = (0, utils_1.isDefined)(item?.requires_shipping)
++    const supportsDigitalMedia = variant?.product?.metadata?.media_fisica_digital === true;
++    const requiresShipping = supportsDigitalMedia
++        ? item?.metadata?.media_type !== "digital"
++        : (0, utils_1.isDefined)(item?.requires_shipping)
+         ? item.requires_shipping
+         : hasShippingProfile || someInventoryRequiresShipping;
