@@ -52,8 +52,8 @@ const SearchPanel = ({ onNavigate }: { onNavigate: () => void }) => {
 
   return (
     <>
-      <div className="flex items-center gap-x-3 border-b border-ui-border-base px-4">
-        <MagnifyingGlass className="shrink-0 text-ui-fg-muted" />
+      <div className="group mx-4 my-3 flex items-center gap-x-3 rounded-xl border border-fuchsia-200 bg-gradient-to-l from-pink-50 via-fuchsia-50 to-white px-4 shadow-sm transition duration-200 focus-within:border-fuchsia-400 focus-within:shadow-[0_0_0_3px_rgba(217,70,239,0.15)]">
+        <MagnifyingGlass className="shrink-0 text-fuchsia-700 transition-transform duration-200 group-focus-within:scale-110 motion-reduce:transform-none" />
         <input
           type="search"
           value={inputValue}
@@ -64,7 +64,7 @@ const SearchPanel = ({ onNavigate }: { onNavigate: () => void }) => {
           placeholder={translate(countryCode, "search")}
           aria-label={translate(countryCode, "search")}
           autoFocus
-          className="txt-medium w-full bg-transparent py-4 text-ui-fg-base outline-none placeholder:text-ui-fg-muted"
+          className="txt-medium w-full bg-transparent py-3 text-ui-fg-base outline-none placeholder:text-ui-fg-muted"
           data-testid="search-input"
         />
       </div>
@@ -136,13 +136,13 @@ const Search = () => {
           open()
         }}
         aria-label={translate(countryCode, "search")}
-        className="flex h-11 min-w-0 items-center justify-between gap-3 rounded-sm bg-white px-4 text-slate-500 shadow-sm transition hover:bg-slate-50"
+        className="group relative flex h-11 min-w-0 items-center justify-between gap-3 overflow-hidden rounded-xl border border-white/80 bg-gradient-to-l from-white via-pink-200 to-purple-400 px-4 text-[#1a103a] shadow-[0_6px_18px_rgba(217,70,239,0.16)] transition-all duration-300 ease-out hover:border-white hover:shadow-[0_10px_26px_rgba(217,70,239,0.24)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-200 focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a103a] motion-reduce:transform-none motion-reduce:transition-none"
         data-testid="nav-search-button"
       >
-        <span className="truncate text-sm">
+        <span className="truncate text-sm font-medium">
           {translate(countryCode, "search")}
         </span>
-        <MagnifyingGlass className="h-5 w-5 shrink-0 text-slate-950" />
+        <MagnifyingGlass className="h-5 w-5 shrink-0 text-[#1a103a] transition-transform duration-300 group-hover:scale-110 motion-reduce:transform-none" />
       </Link>
 
       <SearchDrawer isOpen={isOpen} close={close}>

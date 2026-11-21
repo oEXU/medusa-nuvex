@@ -1,6 +1,7 @@
 "use client"
 
 import { indexedCurrency, priceAttribute } from "@lib/search-client"
+import { getPercentageDiff } from "@lib/util/get-percentage-diff"
 import { convertToLocale } from "@lib/util/money"
 import { Text, clx } from "@modules/common/components/ui"
 
@@ -32,10 +33,15 @@ const HitPrice = ({ hit, currencyCode }: HitPriceProps) => {
 
   const max = max_price ?? min_price
   const isRange = max > min_price
+  const hasDiscount =
+    !isRange &&
+    on_sale &&
+    original_price !== null &&
+    original_price > min_price
 
   return (
     <div className="flex items-center gap-x-2" data-testid="product-price">
-      {!isRange && on_sale && original_price !== null && (
+      {hasDiscount && original_price !== null && (
         <Text
           className="line-through text-ui-fg-muted"
           data-testid="original-price"
@@ -45,12 +51,20 @@ const HitPrice = ({ hit, currencyCode }: HitPriceProps) => {
       )}
       <Text
         className={clx("text-ui-fg-muted", {
-          "text-ui-tag-red-text": on_sale,
+          "text-ui-tag-red-text": hasDiscount,
         })}
         data-testid="price"
       >
         {isRange ? `${format(min_price)} - ${format(max)}` : format(min_price)}
       </Text>
+      {hasDiscount && original_price !== null && (
+        <Text
+          className="rounded bg-pink-700 px-1.5 py-0.5 text-xs font-bold text-white"
+          data-testid="discount-percentage"
+        >
+          -{getPercentageDiff(original_price, min_price)}%
+        </Text>
+      )}
     </div>
   )
 }

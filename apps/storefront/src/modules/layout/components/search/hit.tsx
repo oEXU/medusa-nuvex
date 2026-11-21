@@ -6,6 +6,7 @@ import type { Hit as HitType } from "instantsearch.js"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import PlaceholderImage from "@modules/common/icons/placeholder-image"
 import { Text } from "@modules/common/components/ui"
+import { resolveImageUrl } from "@lib/util/image-url"
 
 export type ProductHit = HitType<{
   title: string | null
@@ -34,7 +35,7 @@ const SearchHit = ({ hit, onNavigate }: SearchHitProps) => {
         <div className="relative h-16 w-14 shrink-0 overflow-hidden rounded-rounded bg-ui-bg-subtle">
           {hit.thumbnail ? (
             <Image
-              src={hit.thumbnail}
+              src={resolveImageUrl(hit.thumbnail)}
               alt=""
               fill
               sizes="56px"

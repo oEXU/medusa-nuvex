@@ -16,6 +16,7 @@ import { getRegion } from "./regions"
 import { getLocale, setLocaleCookie } from "./locale-actions"
 import {
   canSelectCartMediaType,
+  isDigitalGtaViItem,
   type CartMediaType,
 } from "@lib/util/cart-media"
 
@@ -215,6 +216,34 @@ export async function addToCart({
     .catch(medusaError)
 }
 
+export async function ensurePhysicalShippingForCart(
+  cart: HttpTypes.StoreCart
+) {
+  const itemsToUpdate = (cart.items ?? []).filter(
+    (item) =>
+      item.requires_shipping === false && !isDigitalGtaViItem(item)
+  )
+
+  if (!itemsToUpdate.length) {
+    return false
+  }
+
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+
+  for (const item of itemsToUpdate) {
+    await sdk.client.fetch(`/store/carts/${cart.id}/delivery-mode`, {
+      method: "POST",
+      body: { media_type: "physical", item_id: item.id },
+      headers,
+      cache: "no-store",
+    })
+  }
+
+  return true
+}
+
 export async function updateLineItem({
   lineId,
   quantity,
@@ -286,7 +315,10 @@ export async function updateLineItemMediaType({
   const item = cart.items?.find((lineItem) => lineItem.id === lineId)
   const currentMediaType = item?.metadata?.media_type
   const productSupportsMediaChoices =
-    item?.product?.metadata?.media_fisica_digital === true
+    item?.product_handle === "grand-theft-auto-vi-ultimate-edition-primaria" ||
+    item?.product_handle === "grand-theft-auto-vi-ultimate-edition-secundaria" ||
+    item?.product?.handle === "grand-theft-auto-vi-ultimate-edition-primaria" ||
+    item?.product?.handle === "grand-theft-auto-vi-ultimate-edition-secundaria"
   const hasMediaChoice =
     currentMediaType === "physical" || currentMediaType === "digital"
 

@@ -23,6 +23,7 @@ type MobileActionsProps = {
   addError?: string | null
   show: boolean
   optionsDisabled: boolean
+  disabled?: boolean
 }
 
 const MobileActions: React.FC<MobileActionsProps> = ({
@@ -37,6 +38,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
   addError,
   show,
   optionsDisabled,
+  disabled,
 }) => {
   const { state, open, close } = useToggleState()
 
@@ -53,8 +55,14 @@ const MobileActions: React.FC<MobileActionsProps> = ({
 
     return variantPrice || cheapestPrice || null
   }, [price])
+  const hasDiscount =
+    !!selectedPrice &&
+    selectedPrice.price_type === "sale" &&
+    selectedPrice.original_price_number > selectedPrice.calculated_price_number
 
   const isSimple = isSimpleProduct(product)
+  const unavailableLabel =
+    product.metadata?.mock === true ? "Indisponível no momento" : "Out of stock"
 
   return (
     <>
@@ -82,7 +90,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
               <span>—</span>
               {selectedPrice ? (
                 <div className="flex items-end gap-x-2 text-ui-fg-base">
-                  {selectedPrice.price_type === "sale" && (
+                  {hasDiscount && (
                     <p>
                       <span className="line-through text-small-regular">
                         {selectedPrice.original_price}
@@ -91,12 +99,16 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                   )}
                   <span
                     className={clx({
-                      "text-ui-fg-interactive":
-                        selectedPrice.price_type === "sale",
+                      "text-ui-fg-interactive": hasDiscount,
                     })}
                   >
                     {selectedPrice.calculated_price}
                   </span>
+                  {hasDiscount && (
+                    <span className="text-small-regular font-semibold text-ui-fg-interactive">
+                      -{selectedPrice.percentage_diff}%
+                    </span>
+                  )}
                 </div>
               ) : (
                 <div></div>
@@ -124,7 +136,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
               <Button
                 type="button"
                 onClick={handleAddToCart}
-                disabled={!inStock || !variant || !hasPrice}
+                disabled={disabled || !inStock || !variant || !hasPrice}
                 className="w-full"
                 isLoading={isAdding}
                 data-testid="mobile-cart-button"
@@ -134,7 +146,9 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                   : !hasPrice
                   ? "Price unavailable"
                   : !inStock
-                  ? "Out of stock"
+                  ? unavailableLabel
+                  : disabled
+                  ? "Produto de exemplo"
                   : "Add to cart"}
               </Button>
             </div>

@@ -12,13 +12,16 @@ import { isEqual } from "lodash"
 import { useParams, usePathname } from "next/navigation"
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react"
 import ProductPrice from "../product-price"
+import ProductSocialProof from "@modules/products/components/product-social-proof"
 import MobileActions from "./mobile-actions"
 import { useRouter } from "next/navigation"
+import type { SocialProofStats } from "@lib/data/mock-social-proof"
 
 type ProductActionsProps = {
   product: HttpTypes.StoreProduct
   region: HttpTypes.StoreRegion
   disabled?: boolean
+  socialProof?: SocialProofStats | null
 }
 
 const optionsAsKeymap = (
@@ -36,6 +39,7 @@ const getDefaultVariant = (product: HttpTypes.StoreProduct) =>
 export default function ProductActions({
   product,
   disabled,
+  socialProof,
 }: ProductActionsProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -49,7 +53,8 @@ export default function ProductActions({
   const [addError, setAddError] = useState<string | null>(null)
   const countryCode = useParams().countryCode as string
   const supportsMediaChoices =
-    product.metadata?.media_fisica_digital === true
+    product.handle === "grand-theft-auto-vi-ultimate-edition-primaria" ||
+    product.handle === "grand-theft-auto-vi-ultimate-edition-secundaria"
 
   const selectedVariant = useMemo(() => {
     if (!product.variants || product.variants.length === 0) {
@@ -113,6 +118,8 @@ export default function ProductActions({
     () => isVariantInStock(selectedVariant),
     [selectedVariant]
   )
+  const unavailableLabel =
+    product.metadata?.mock === true ? "Indisponível no momento" : "Out of stock"
   const hasSelectedPrice =
     typeof selectedVariant?.calculated_price?.calculated_amount === "number"
 
@@ -198,6 +205,12 @@ export default function ProductActions({
             )}
           </div>
 
+          <ProductSocialProof
+            handle={product.handle}
+            countryCode={countryCode}
+            initialStats={socialProof ?? null}
+          />
+
           <ProductPrice product={product} variant={selectedVariant} />
           {addError && (
             <p className="text-small-regular text-ui-fg-error" role="alert">
@@ -210,7 +223,7 @@ export default function ProductActions({
               className="text-small-regular text-ui-fg-subtle"
               data-testid="product-availability"
             >
-              {inStock ? "In stock" : "Out of stock"}
+              {inStock ? "In stock" : unavailableLabel}
             </p>
           )}
 
@@ -234,7 +247,9 @@ export default function ProductActions({
               : !hasSelectedPrice
               ? "Price unavailable"
               : !inStock || !isValidVariant
-              ? "Out of stock"
+              ? unavailableLabel
+              : disabled
+              ? "Produto de exemplo"
               : "Add to cart"}
           </Button>
         </form>
@@ -250,6 +265,7 @@ export default function ProductActions({
           addError={addError}
           show={!inView}
           optionsDisabled={!!disabled || isAdding}
+          disabled={!!disabled}
         />
       </div>
     </>

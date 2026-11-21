@@ -17,14 +17,18 @@ export default async function regionStorePolicies({ container }: { container: Me
     const missing = Object.fromEntries(
       Object.entries(DEFAULT_REGION_STORE_POLICIES).filter(([key]) => metadata[key] === undefined)
     );
-    if (!Object.keys(missing).length) {
+    const updates =
+      metadata.shipping_rate === 0
+        ? missing
+        : { ...missing, shipping_rate: 0 };
+    if (!Object.keys(updates).length) {
       continue;
     }
 
     await updateRegionsWorkflow(container).run({
       input: {
         selector: { id: region.id },
-        update: { metadata: { ...metadata, ...missing } },
+        update: { metadata: { ...metadata, ...updates } },
       },
     });
     logger.info(`Added store policy defaults to region "${region.name}"`);

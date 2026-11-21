@@ -2,6 +2,11 @@ export type StoreLanguage = "pt-BR" | "en-US"
 
 export type TranslationKey =
   | "announcement"
+  | "announcementLabel"
+  | "announcementInstallments"
+  | "announcementFlashDelivery"
+  | "announcementDiscount"
+  | "announcementPix"
   | "login"
   | "register"
   | "categories"
@@ -39,8 +44,11 @@ export type TranslationKey =
   | "platformEyebrow"
   | "platformHeading"
   | "platformDescription"
+  | "launches"
   | "platformEmptyBefore"
   | "platformEmptyAfter"
+  | "expandProducts"
+  | "collapseProducts"
   | "trustStatement"
   | "storePromise"
   | "experienceInProgress"
@@ -49,6 +57,27 @@ export type TranslationKey =
   | "catalogPreparing"
   | "catalogDescription"
   | "comingSoon"
+  | "faqHeading"
+  | "faqPayments"
+  | "faqPaymentsAnswer"
+  | "faqDelivery"
+  | "faqDeliveryAnswer"
+  | "faqTracking"
+  | "faqTrackingAnswer"
+  | "faqWarranty"
+  | "faqWarrantyAnswer"
+  | "faqExchange"
+  | "faqExchangeAnswer"
+  | "faqMedia"
+  | "faqMediaAnswer"
+  | "socialProofSales"
+  | "socialProofCartAdds"
+  | "launchCountdownTitle"
+  | "launchCountdownDays"
+  | "launchCountdownHours"
+  | "launchCountdownMinutes"
+  | "launchCountdownSeconds"
+  | "launchCountdownAvailable"
   | "footerDescription"
   | "nextPhaseComing"
   | "contactHelp"
@@ -120,6 +149,7 @@ export type TranslationKey =
   | "paymentMethod"
   | "paymentSetupPending"
   | "paymentUnavailable"
+  | "paymentUnavailableStatus"
   | "paymentPending"
   | "paymentDetails"
   | "anotherStep"
@@ -143,6 +173,11 @@ export type TranslationKey =
 const translations: Record<StoreLanguage, Record<TranslationKey, string>> = {
   "pt-BR": {
     announcement: "Ofertas, drops e lançamentos · Novidades selecionadas para você",
+    announcementLabel: "Anúncios NuveX",
+    announcementInstallments: "Até 12x sem juros em qualquer cartão",
+    announcementFlashDelivery: "CUPOM VEMGTA PRA GANHAR R$50 DE DESCONTO",
+    announcementDiscount: "Jogos com até 90% off",
+    announcementPix: "10% de desconto no Pix",
     login: "Olá! Faça login",
     register: "ou cadastre-se",
     categories: "Categorias",
@@ -159,7 +194,7 @@ const translations: Record<StoreLanguage, Record<TranslationKey, string>> = {
     menuSubtitle: "Categorias da loja",
     storeCategories: "Mais categorias e novidades em breve.",
     moreCategories: "Categorias da loja",
-    pcPeripherals: "PC e Periféricos",
+    pcPeripherals: "PC",
     ps5: "PS5",
     xbox: "XBOX",
     switch: "Nintendo Switch",
@@ -182,8 +217,11 @@ const translations: Record<StoreLanguage, Record<TranslationKey, string>> = {
     platformHeading: "Categorias para cada estilo.",
     platformDescription:
       "Do setup completo às coleções geek, explore as categorias NuveX e encontre o que combina com você.",
+    launches: "Lançamentos",
     platformEmptyBefore: "Estamos preparando novidades para quem curte",
     platformEmptyAfter: ".",
+    expandProducts: "Expandir",
+    collapseProducts: "Recolher",
     trustStatement: "Identidade brasileira, atitude gamer",
     storePromise: "Uma loja pensada para quem joga",
     experienceInProgress: "Uma nova experiência em construção",
@@ -193,6 +231,33 @@ const translations: Record<StoreLanguage, Record<TranslationKey, string>> = {
     catalogDescription:
       "A vitrine NuveX Games está ganhando forma. Em breve, novos jogos e experiências para você explorar.",
     comingSoon: "Novidades em breve",
+    faqHeading: "Perguntas frequentes",
+    faqPayments: "1. Quais formas de pagamento são aceitas?",
+    faqPaymentsAnswer:
+      "Aceitamos Pix e outras formas de pagamento disponíveis no checkout.",
+    faqDelivery: "2. Qual é o prazo de entrega?",
+    faqDeliveryAnswer:
+      "O prazo varia de acordo com o CEP e a modalidade de envio escolhida.",
+    faqTracking: "3. Como posso rastrear meu pedido?",
+    faqTrackingAnswer:
+      "Após o envio, você receberá um código ou link para acompanhar sua encomenda.",
+    faqWarranty: "4. Os produtos possuem garantia?",
+    faqWarrantyAnswer:
+      "Sim. Todos os produtos contam com garantia conforme as condições legais e contratuais aplicáveis.",
+    faqExchange: "5. Como faço para solicitar uma troca ou devolução?",
+    faqExchangeAnswer:
+      "Entre em contato com nosso atendimento informando o número do pedido e o motivo da solicitação.",
+    faqMedia: "6. O que é mídia primária e mídia secundária?",
+    faqMediaAnswer:
+      "Mídia Primária\nJogue no seu próprio perfil\n• Você joga diretamente na sua conta, com seu próprio usuário.\n• Pode jogar offline e online (online exige PS Plus na sua conta).\n• Todos os perfis do console têm acesso ao jogo.\n\nMídia Secundária\nJogue no perfil da loja\n• Você joga na conta da loja, utilizando o usuário da loja.\n• Não permite jogo online, mesmo com PS Plus.\n• O jogo precisa ser acessado sempre por esse usuário.",
+    socialProofSales: "pessoas compraram",
+    socialProofCartAdds: "pessoas adicionaram ao carrinho",
+    launchCountdownTitle: "Lançamento em",
+    launchCountdownDays: "Dias",
+    launchCountdownHours: "Horas",
+    launchCountdownMinutes: "Min",
+    launchCountdownSeconds: "Seg",
+    launchCountdownAvailable: "Já disponível",
     footerDescription: "Novidades, lançamentos e universos para quem vive o jogo.",
     nextPhaseComing: "A próxima fase está chegando",
     contactHelp: "Precisa de ajuda ou quer falar com a NuveX? Estamos por aqui.",
@@ -268,7 +333,8 @@ const translations: Record<StoreLanguage, Record<TranslationKey, string>> = {
     paymentSetupPending: "Estamos preparando os pagamentos desta região.",
     paymentUnavailable:
       "Os métodos abaixo só poderão ser usados depois que o gateway de pagamento for configurado. Nenhuma cobrança será iniciada agora.",
-    paymentPending: "Em configuração",
+    paymentUnavailableStatus: "Indisponível",
+    paymentPending: "Em Manutenção",
     paymentDetails: "Dados de pagamento",
     anotherStep: "Uma etapa adicional será exibida",
     country: "País",
@@ -290,6 +356,11 @@ const translations: Record<StoreLanguage, Record<TranslationKey, string>> = {
   },
   "en-US": {
     announcement: "Deals, weekly drops & new releases · Curated updates for you",
+    announcementLabel: "NuveX announcements",
+    announcementInstallments: "Up to 12x interest-free on any card",
+    announcementFlashDelivery: "Flash delivery in up to 30 minutes",
+    announcementDiscount: "Games up to 90% off",
+    announcementPix: "10% off with PIX",
     login: "Hello! Sign in",
     register: "or create an account",
     categories: "Categories",
@@ -306,7 +377,7 @@ const translations: Record<StoreLanguage, Record<TranslationKey, string>> = {
     menuSubtitle: "Store categories",
     storeCategories: "More categories and news coming soon.",
     moreCategories: "Store categories",
-    pcPeripherals: "PC & Peripherals",
+    pcPeripherals: "PC",
     ps5: "PS5",
     xbox: "XBOX",
     switch: "Nintendo Switch",
@@ -329,8 +400,11 @@ const translations: Record<StoreLanguage, Record<TranslationKey, string>> = {
     platformHeading: "Categories for every style.",
     platformDescription:
       "From complete gaming setups to geek collectibles, explore NuveX categories and find what fits your style.",
+    launches: "New Releases",
     platformEmptyBefore: "We're getting new picks ready for",
     platformEmptyAfter: ".",
+    expandProducts: "Show more",
+    collapseProducts: "Show less",
     trustStatement: "Brazilian roots, gamer attitude",
     storePromise: "A store made for gamers",
     experienceInProgress: "A new experience in the making",
@@ -340,6 +414,33 @@ const translations: Record<StoreLanguage, Record<TranslationKey, string>> = {
     catalogDescription:
       "The NuveX Games storefront is taking shape. New games and experiences are coming soon.",
     comingSoon: "Coming soon",
+    faqHeading: "Frequently asked questions",
+    faqPayments: "1. Which payment methods are accepted?",
+    faqPaymentsAnswer:
+      "We accept Pix and other payment methods available at checkout.",
+    faqDelivery: "2. What is the delivery time?",
+    faqDeliveryAnswer:
+      "The delivery time varies according to your postal code and selected shipping method.",
+    faqTracking: "3. How can I track my order?",
+    faqTrackingAnswer:
+      "After shipment, you will receive a code or link to track your package.",
+    faqWarranty: "4. Do the products have a warranty?",
+    faqWarrantyAnswer:
+      "Yes. All products include warranty in accordance with applicable legal and contractual conditions.",
+    faqExchange: "5. How do I request an exchange or return?",
+    faqExchangeAnswer:
+      "Contact our support team with your order number and the reason for the request.",
+    faqMedia: "6. What are primary and secondary media?",
+    faqMediaAnswer:
+      "Primary Media\nPlay on your own profile\n• Play directly on your account, using your own user.\n• Play offline and online (online play requires PS Plus on your account).\n• All profiles on the console can access the game.\n\nSecondary Media\nPlay on the store profile\n• Play on the store's account, using the store's user.\n• Online play is not available, even with PS Plus.\n• The game must always be accessed using this user.",
+    socialProofSales: "people bought",
+    socialProofCartAdds: "people added to cart",
+    launchCountdownTitle: "Launching in",
+    launchCountdownDays: "Days",
+    launchCountdownHours: "Hours",
+    launchCountdownMinutes: "Min",
+    launchCountdownSeconds: "Sec",
+    launchCountdownAvailable: "Available now",
     footerDescription: "New releases and worlds for everyone who lives the game.",
     nextPhaseComing: "Your next level is coming",
     contactHelp: "Need help or want to talk to NuveX? We're here for you.",
@@ -415,6 +516,7 @@ const translations: Record<StoreLanguage, Record<TranslationKey, string>> = {
     paymentSetupPending: "Payments for this region are being set up.",
     paymentUnavailable:
       "The methods below will be available after a payment gateway is configured. No charge will be initiated now.",
+    paymentUnavailableStatus: "Unavailable",
     paymentPending: "Setup pending",
     paymentDetails: "Payment details",
     anotherStep: "Another step will appear",

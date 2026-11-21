@@ -29,12 +29,9 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
   const [mediaTypeError, setMediaTypeError] = useState<string | null>(null)
   const { countryCode } = useParams<{ countryCode: string }>()
   const storedMediaType = item.metadata?.media_type
-  const productSupportsMediaChoices =
-    item.product?.metadata?.media_fisica_digital === true
   const supportsMediaChoices =
-    productSupportsMediaChoices ||
-    storedMediaType === "physical" ||
-    storedMediaType === "digital"
+    item.product_handle === "grand-theft-auto-vi-ultimate-edition-primaria" ||
+    item.product_handle === "grand-theft-auto-vi-ultimate-edition-secundaria"
   const mediaType: CartMediaType =
     storedMediaType === "digital" ? "digital" : "physical"
   const isEnglish = countryCode === "us"

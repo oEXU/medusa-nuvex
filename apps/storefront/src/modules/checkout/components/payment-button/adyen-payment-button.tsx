@@ -154,7 +154,7 @@ const AdyenPaymentButton = ({
   if (notReady) {
     return (
       <Button disabled size="large" data-testid={dataTestId}>
-        Place order
+        {countryCode === "us" ? "Place order" : "Finalizar pedido"}
       </Button>
     )
   }

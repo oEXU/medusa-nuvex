@@ -1,4 +1,5 @@
 import { clx } from "@modules/common/components/ui"
+import PixIcon from "@modules/common/components/pix-icon"
 
 import { getProductPrice } from "@lib/util/get-product-price"
 import { HttpTypes } from "@medusajs/types"
@@ -28,7 +29,7 @@ export default function ProductPrice({
   return (
     <div className="flex flex-col text-ui-fg-base">
       <span
-        className={clx("text-xl-semi", {
+        className={clx("flex items-center gap-1.5 text-xl-semi", {
           "text-ui-fg-interactive": selectedPrice.price_type === "sale",
         })}
       >
@@ -39,6 +40,7 @@ export default function ProductPrice({
         >
           {selectedPrice.calculated_price}
         </span>
+        <PixIcon className="h-5 w-5 shrink-0" />
       </span>
       {selectedPrice.price_type === "sale" && (
         <>

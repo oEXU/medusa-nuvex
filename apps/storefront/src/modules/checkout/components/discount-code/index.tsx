@@ -54,73 +54,120 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
   }
 
   return (
-    <div className="w-full bg-white flex flex-col">
-      <div className="txt-medium">
-        <form action={(a) => addPromotionCode(a)} className="w-full mb-5">
-          <Label className="flex gap-x-1 my-2 items-center">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              type="button"
-              className="txt-medium text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
-              data-testid="add-discount-button"
-            >
-              Add Promotion Code(s)
-            </button>
-
-            {/* <Tooltip content="You can add multiple promotion codes">
-              <InformationCircleSolid color="var(--fg-muted)" />
-            </Tooltip> */}
-          </Label>
-
-          {isOpen && (
-            <>
-              <div className="flex w-full gap-x-2">
-                <Input
-                  className="size-full"
-                  id="promotion-input"
-                  name="code"
-                  type="text"
-                  autoFocus={false}
-                  data-testid="discount-input"
+    <div className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 p-3">
+      <form action={(a) => addPromotionCode(a)} className="w-full">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          type="button"
+          className="flex w-full items-center justify-between gap-3 rounded-xl px-1 py-1 text-left transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-600"
+          data-testid="add-discount-button"
+          aria-expanded={isOpen}
+        >
+          <span className="flex items-center gap-2">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-fuchsia-100 text-fuchsia-700">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v2.1a2 2 0 0 0 0 3.8v3.1a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5v-3.1a2 2 0 0 0 0-3.8V7.5Z"
+                  stroke="currentColor"
+                  strokeWidth="1.7"
+                  strokeLinejoin="round"
                 />
-                <SubmitButton
-                  variant="secondary"
-                  data-testid="discount-apply-button"
-                >
-                  Apply
-                </SubmitButton>
-              </div>
+                <path
+                  d="M12 5.5v13"
+                  stroke="currentColor"
+                  strokeWidth="1.7"
+                  strokeDasharray="2.5 2.5"
+                />
+              </svg>
+            </span>
+            <span>
+              <span className="block text-sm font-semibold text-slate-900">
+                Adicionar cupom de desconto
+              </span>
+              <span className="block text-xs text-slate-500">
+                Tem um código promocional?
+              </span>
+            </span>
+          </span>
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 20 20"
+            fill="none"
+            className={`shrink-0 text-slate-500 transition-transform ${isOpen ? "rotate-180" : ""}`}
+            aria-hidden="true"
+          >
+            <path
+              d="m5 7.5 5 5 5-5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
 
-              <ErrorMessage
-                error={errorMessage}
-                data-testid="discount-error-message"
+        {isOpen && (
+          <div className="mt-3 rounded-xl border border-slate-200 bg-white p-2">
+            <div className="flex w-full items-stretch gap-2">
+              <Label htmlFor="promotion-input" className="sr-only">
+                Código promocional
+              </Label>
+              <Input
+                className="h-11 min-w-0 flex-1 border-slate-300 bg-white uppercase placeholder:normal-case"
+                id="promotion-input"
+                name="code"
+                type="text"
+                placeholder="Digite o código"
+                autoComplete="off"
+                data-testid="discount-input"
               />
-            </>
-          )}
-        </form>
+              <SubmitButton
+                variant="primary"
+                className="h-11 shrink-0 px-4"
+                data-testid="discount-apply-button"
+              >
+                Aplicar
+              </SubmitButton>
+            </div>
 
-        {promotions.length > 0 && (
-          <div className="w-full flex items-center">
-            <div className="flex flex-col w-full">
-              <Heading className="txt-medium mb-2">
-                Promotion(s) applied:
-              </Heading>
+            <ErrorMessage
+              error={errorMessage}
+              data-testid="discount-error-message"
+            />
+          </div>
+        )}
+      </form>
 
-              {promotions.map((promotion) => {
-                return (
-                  <div
-                    key={promotion.id}
-                    className="flex items-center justify-between w-full max-w-full mb-2"
-                    data-testid="discount-row"
-                  >
-                    <Text className="flex gap-x-1 items-baseline txt-small-plus w-4/5 pr-1">
-                      <span className="truncate" data-testid="discount-code">
-                        <Badge
-                          color={promotion.is_automatic ? "green" : "grey"}
-                        >
-                          {promotion.code}
-                        </Badge>{" "}
-                        (
+      {promotions.length > 0 && (
+        <div className="mt-3 border-t border-slate-200 pt-3">
+          <Heading level="h3" className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+            Cupons aplicados
+          </Heading>
+
+          <div className="flex flex-col gap-2">
+            {promotions.map((promotion) => {
+              return (
+                <div
+                  key={promotion.id}
+                  className="flex min-h-11 items-center justify-between gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2"
+                  data-testid="discount-row"
+                >
+                  <Text className="min-w-0 flex-1 text-sm text-slate-700">
+                    <span className="flex min-w-0 items-center gap-2" data-testid="discount-code">
+                      <Badge
+                        color={promotion.is_automatic ? "green" : "grey"}
+                        className="max-w-full truncate"
+                      >
+                        {promotion.code}
+                      </Badge>
+                      <span className="shrink-0 font-semibold text-emerald-700">
                         {promotion.application_method?.value !== undefined &&
                           promotion.application_method.currency_code !==
                             undefined && (
@@ -136,39 +183,32 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
                                   })}
                             </>
                           )}
-                        )
-                        {/* {promotion.is_automatic && (
-                          <Tooltip content="This promotion is automatically applied">
-                            <InformationCircleSolid className="inline text-zinc-400" />
-                          </Tooltip>
-                        )} */}
                       </span>
-                    </Text>
-                    {!promotion.is_automatic && (
-                      <button
-                        className="flex items-center"
-                        onClick={() => {
-                          if (!promotion.code) {
-                            return
-                          }
+                    </span>
+                  </Text>
+                  {!promotion.is_automatic && (
+                    <button
+                      type="button"
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-slate-500 transition-colors hover:bg-white hover:text-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-600"
+                      onClick={() => {
+                        if (!promotion.code) {
+                          return
+                        }
 
-                          removePromotionCode(promotion.code)
-                        }}
-                        data-testid="remove-discount-button"
-                      >
-                        <Trash size={14} />
-                        <span className="sr-only">
-                          Remove discount code from order
-                        </span>
-                      </button>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
+                        removePromotionCode(promotion.code)
+                      }}
+                      data-testid="remove-discount-button"
+                      aria-label="Remover cupom"
+                    >
+                      <Trash size={15} />
+                    </button>
+                  )}
+                </div>
+              )
+            })}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }

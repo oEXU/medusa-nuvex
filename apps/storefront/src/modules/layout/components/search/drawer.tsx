@@ -30,15 +30,15 @@ const SearchDrawer = ({ isOpen, close, children }: SearchDrawerProps) => {
           <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
             <Transition.Child
               as={Fragment}
-              enter="transform transition ease-in-out duration-300"
-              enterFrom="translate-x-full"
-              enterTo="translate-x-0"
-              leave="transform transition ease-in-out duration-200"
-              leaveFrom="translate-x-0"
-              leaveTo="translate-x-full"
+              enter="transform-gpu origin-top-right transition ease-out duration-300 motion-reduce:transition-none"
+              enterFrom="opacity-0 -translate-y-3 scale-y-95"
+              enterTo="opacity-100 translate-y-0 scale-y-100"
+              leave="transform-gpu origin-top-right transition ease-in duration-200 motion-reduce:transition-none"
+              leaveFrom="opacity-100 translate-y-0 scale-y-100"
+              leaveTo="opacity-0 -translate-y-2 scale-y-95"
             >
               <Dialog.Panel
-                className="pointer-events-auto w-screen max-w-md"
+                className="pointer-events-auto w-screen max-w-md origin-top-right motion-reduce:transform-none"
                 data-testid="search-drawer"
               >
                 <div className="flex h-full flex-col border-l border-ui-border-base bg-ui-bg-base shadow-elevation-modal">

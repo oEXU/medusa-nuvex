@@ -1,0 +1,128 @@
+{
+  "planHash": "973494a00f52ace47e5f27f36c10b4ccfeaa6bcab3bb47f1c9208881d66cb2d5",
+  "phase": "standalone",
+  "recordedAtUtc": "2026-11-20T20:58:36.0516064Z",
+  "retryCount": 0,
+  "resetBaseline": false,
+  "complete": true,
+  "result": {
+    "setupSucceeded": true,
+    "setupDurationMs": 0,
+    "setupFailureOutput": null,
+    "assertions": [
+      {
+        "name": "typescript-check",
+        "kind": "process",
+        "verificationMethod": "exit-code",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 0,
+        "outputSample": "",
+        "durationMs": 8516
+      },
+      {
+        "name": "storefront-lint",
+        "kind": "process",
+        "verificationMethod": "exit-code",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 0,
+        "outputSample": "",
+        "durationMs": 6601
+      },
+      {
+        "name": "tests-pass",
+        "kind": "process",
+        "verificationMethod": "test-results",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 0,
+        "outputSample": "\r\n\u003E @dtc/storefront@1.0.3 test\r\n\u003E node --test src/modules/products/components/product-rating-summary/rating.test.mjs\r\n\r\n(node:175876) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/Win%2010/Desktop/apt%20-gtavi-medusa/apps/storefront/src/modules/products/components/product-rating-summary/rating.ts is not specified and it doesn\u0027t parse as CommonJS.\r\nReparsing as ES module because module syntax was detected. This incurs a performance overhead.\r\nTo eliminate this warning, add \u0022type\u0022: \u0022module\u0022 to \\\\?\\C:\\Users\\Win 10\\Desktop\\apt -gtavi-medusa\\apps\\storefront\\package.json.\r\n(Use \u0060node --trace-warnings ...\u0060 to show where the warning was created)\r\n\u2714 returns zero when there are no ratings (1.0351ms)\r\n\u2714 calculates a fractional average (0.2427ms)\r\n\u2714 keeps the average within the five-star range (0.1514ms)\r\n\u2139 tests 3\r\n\u2139 suites 0\r\n\u2139 pass 3\r\n\u2139 fail 0\r\n\u2139 cancelled 0\r\n\u2139 skipped 0\r\n\u2139 todo 0\r\n\u2139 duration_ms 151.4449\r\n",
+        "durationMs": 1260,
+        "testResults": {
+          "testFramework": "unknown",
+          "runnerDetectedFrom": "none",
+          "testsTotal": 0,
+          "testsPassed": 0,
+          "testsFailed": 0,
+          "testsSkipped": 0,
+          "parseFailed": true
+        }
+      },
+      {
+        "name": "product-detail-route",
+        "kind": "http-probe",
+        "verificationMethod": "http-status",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": null,
+        "outputSample": "HTTP 200\n\u003C!DOCTYPE html\u003E\u003Chtml lang=\u0022pt-BR\u0022 data-mode=\u0022light\u0022\u003E\u003Chead\u003E\u003Cmeta charSet=\u0022utf-8\u0022/\u003E\u003Cmeta name=\u0022viewport\u0022 content=\u0022width=device-width, initial-scale=1\u0022/\u003E\u003Clink rel=\u0022preload\u0022 as=\u0022image\u0022 href=\u0022http://localhost:9000/static/1795015229406-imagem-01.png\u0022/\u003E\u003Clink rel=\u0022stylesheet\u0022 href=\u0022/_next/static/chunks/apps_storefront_src_styles_globals_0e8-m_n.css\u0022 data-precedence=\u0022next_static/chunks/apps_storefront_src_styles_globals_0e8-m_n.css\u0022/\u003E\u003Clink rel=\u0022preload\u0022 as=\u0022script\u0022 fetchPriority=\u0022low\u0022 href=\u0022/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_1haxkfu._.js\u0022/\u003E\u003Cscript src=\u0022/_next/static/chunks/node_modules_next_dist_compiled_next-devtools_index_090k2jm.js\u0022 async=\u0022\u0022\u003E\u003C/script\u003E\u003Cscript src=\u0022/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js\u0022 async=\u0022\u0022\u003E\u003C/script\u003E\u003Cscript src=\u0022/_next/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_164kp-6._.js\u0022 async=\u0022\u0022\u003E\u003C/script\u003E\u003Cscript src=\u0022/_next/static/chunks/node_modules_next_dist_compiled_1amofcm._.js\u0022 async=\u0022\u0022\u003E\u003C/script\u003E\u003Cscript src=\u0022/_next/static/chunks/node_modules_next_dist_client_0_90u2t._.js\u0022 async=\u0022\u0022\u003E\u003C/script\u003E\u003Cscript src=\u0022/_next/static/chunks/node_modules_next_dist_1e8vcs8._.js\u0022 async=\u0022\u0022\u003E\u003C/script\u003E\u003Cscript src=\u0022/_next/static/chunks/0nn8_%40swc_helpers_cjs_03rh8y8._.js\u0022 async=\u0022\u0022\u003E\u003C/script\u003E\u003Cscript src=\u0022/_next/static/chunks/apps_storefront_1anvha4._.js\u0022 async=\u0022\u0022\u003E\u003C/script\u003E\u003Cscript src=\u0022/_next/static/chunks/turbopack-apps_storefront_12exb_z._.js\u0022 async=\u0022\u0022\u003E\u003C/script\u003E\u003Cscript src=\u0022/_next/static/chunks/apps_storefront_0p_e7m8._.js\u0022 async=\u0022\u0022\u003E\u003C/script\u003E\u003Cscript src=\u0022/_next/static/chunks/node_modules_next_dist_20wefz_._.js\u0022 async=\u0022\u0022\u003E\u003C/script\u003E\u003Cscript src=\u0022/_next/static/chunks/node_modules_next_dist_00pwe04._.js\u0022 async=\u0022\u0022\u003E\u003C/script\u003E\u003Cscript src=\u0022/_next/static/chunks/apps_storefront_src_0fz7k61._.js\u0022 async=\u0022\u0022\u003E\u003C/script\u003E\u003Cscript src=\u0022/_next/static/chunks/node_modules_next_1dlgx5k._.js\u0022 async=\u0022\u0022\u003E\u003C/script\u003E\u003Cscript src=\u0022/_next/static/chunks/node_modules_%40headlessui_react_dist_12ckft-._.js\u0022 async=\u0022\u0022\u003E\u003C/script\u003E\u003Cscript src=\u0022/_next/static/chunks/node_modules_%40floating-ui_react_dist_0acszqm._.js\u0022 async=\u0022\u0022\u003E\u003C/script\u003E\u003Cscript src=\u0022/_next/static/chunks/node_modules_algoliasearch-helper_1bljo4b._.js\u0022 async=\u0022\u0022\u003E\u003C/script\u003E\u003Cscript src=\u0022/_next/static/chunks/15a-_instantsearch_js_es_1t2x5cd._.js\u0022 async=\u0022\u0022\u003E\u003C/script\u003E\u003Cscript src=\u0022/_next/static/chunks/node_modules_%40medusajs_js-sdk_dist_esm_0pxtah4._.js\u0022 async=\u0022\u0022\u003E\u003C/script\u003E\u003Cscript src=\u0022/_next/static/chunks/node_modules_02q6wc_._.js\u0022 async=\u0022\u0022\u003E\u003C/script\u003E\u003Cscript src=\u0022/_next/static/chunks/apps_storefront_src_0x1ctlw._.js\u0022 async=\u0022\u0022\u003E\u003C/script\u003E\u003Cscript src=\u0022/_next/static/chunks/_01lbyq7._.js\u0022 async=\u0022\u0022\u003E\u003C/script\u003E\u003Clink rel=\u0022ucp\u0022 href=\u0022/.well-known/ucp\u0022/\u003E\u003Cmeta property=\u0022og:type\u0022 content=\u0022product\u0022/\u003E\u003Cmeta property=\u0022product:price:amount\u0022 content=\u0022119.23\u0022/\u003E\u003Cmeta property=\u0022product:price:currency\u0022 content=\u0022USD\u0022/\u003E\u003Cmeta property=\u0022og:price:amount\u0022 content=\u0022119.23\u0022/\u003E\u003Cmeta property=\u0022og:price:currency\u0022 content=\u0022USD\u0022/\u003E\u003Cmeta property=\u0022product:availability\u0022 content=\u0022in stock\u0022/\u003E\u003Ctitle\u003EMem\u00F3ria XPG Spectrix D35G, 8GB, RGB, DDR4, 3200 Mhz, CL16, Preto - AX4U32008G16A-SBKD35G | NuveX Games\u003C/title\u003E\u003Cmeta name=\u0022description\u0022 content=\u0022Mem\u00F3ria XPG Spectrix D35G, 8GB (1x8GB), RGB Personaliz\u00E1vel, DDR4, 3200MHz, CL16, Baixo Perfil, Intel XMP 2.0 e AMD, Preta - AX4U32008G16A-SBKD35G Aprimore seu setup com a Mem\u00F3ria XPG Spectrix D35G RGB , uma combina\u00E7\u00E3o perfeita de desempenho, estilo e confiabilidade. Projetada com um discreto e moderno dissipador de calor de baixo perfil, este m\u00F3dulo de 8GB (1x8GB) opera a 3200MHz DDR4 com uma lat\u00EAncia \u00E1gil de CL16-20-20, garantindo que seu sistema lide com jogos, multitarefas e aplicativos exigentes com fluidez. A ilumina\u00E7\u00E3o RGB personaliz\u00E1vel adiciona um toque vibrante, enquanto sua alta durabilidade e compatibilidade com plataformas Intel e AMD garantem um upgrade sem preocupa\u00E7\u00F5es. Design Compacto e Robusto para Alta Durabilidade A SPECTRIX D35G apresenta um design composto e discreto, com um contorno triangular que se destaca sem ser extravagante. Seu dissipador de calor de baixo perfil (apenas 36mm de altura) permite f\u00E1cil\n\u2026[truncated]",
+        "durationMs": 9669
+      }
+    ],
+    "executions": [
+      {
+        "source": "typescript-check",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npx.CMD",
+        "args": [
+          "tsc",
+          "--noEmit"
+        ],
+        "cwd": "C:\\Users\\Win 10\\Desktop\\apt -gtavi-medusa\\apps\\storefront",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "storefront-lint",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npx.CMD",
+        "args": [
+          "eslint",
+          "src/modules/products/components/image-gallery/index.tsx",
+          "src/modules/products/components/product-rating-summary/index.tsx",
+          "src/modules/products/components/product-rating-summary/rating.ts",
+          "src/modules/products/components/product-reviews/client.tsx",
+          "src/modules/products/templates/index.tsx",
+          "src/modules/layout/templates/nav/index.tsx",
+          "src/app/[countryCode]/(checkout)/layout.tsx",
+          "--no-warn-ignored"
+        ],
+        "cwd": "C:\\Users\\Win 10\\Desktop\\apt -gtavi-medusa\\apps\\storefront",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "tests-pass",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "test"
+        ],
+        "cwd": "C:\\Users\\Win 10\\Desktop\\apt -gtavi-medusa\\apps\\storefront",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "product-detail-route",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "run",
+          "dev"
+        ],
+        "cwd": "C:\\Users\\Win 10\\Desktop\\apt -gtavi-medusa\\apps\\storefront",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      }
+    ]
+  }
+}

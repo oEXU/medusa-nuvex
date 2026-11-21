@@ -2,6 +2,7 @@ import { Metadata } from "next"
 import Image from "next/image"
 
 import Hero from "@modules/home/components/hero"
+import Faq from "@modules/home/components/faq"
 import { getRegion, listRegions } from "@lib/data/regions"
 import { toJsonLd } from "@lib/util/product-structured-data"
 import { getSiteOrigin, STORE_NAME } from "@lib/util/site"
@@ -11,35 +12,35 @@ const testimonials = [
   {
     name: "Mc Wago",
     image: "/reviews/mc-wago.webp",
-    quote: "Muito bom o atendimento, entrega tudo certinho!!! Recomendo!",
+    quote: "Muito bom o atendimento, entrega tudo certinho! Recomendo demais!",
   },
   {
     name: "Victor Gabriel",
     image: "/reviews/victor-gabriel.webp",
-    quote: "Recomendado em rapaziada, vale a pena.",
+    quote: "Super recomendado, rapaziada! Vale muito a pena.",
   },
   {
     name: "Matheus Lopes",
     image: "/reviews/matheus-lopes.webp",
-    quote: "Recomendo. Rápido atendimento e de confiança.",
+    quote: "Recomendo! Atendimento rápido e loja totalmente confiável.",
   },
   {
     name: "Valmir Major",
     image: "/reviews/valmir-major.webp",
     quote:
-      "Muito top e confiável, tive dificuldade pra instalar o jogo, mas pedi ajuda ao suporte no whatsapp. Objetive ajuda na mesma hora, ai consegui. Muito bom, recomendo.",
+      "Muito confiável! Tive uma pequena dúvida para instalar o jogo, mas pedi ajuda ao suporte no WhatsApp. Obtive atendimento na mesma hora e consegui ativar. Recomendo muito!",
   },
   {
     name: "Rickley Richard",
     image: "/reviews/rickley-richard.webp",
     quote:
-      "Rapaziada eu comprei e realmente funciona, a loja tem um atendimento excelente ao cliente, assinei a psn extra 12 meses, recomendo demais e os preços são bem acessíveis.",
+      "Comprei e realmente funciona perfeitamente. A loja oferece um excelente atendimento ao cliente, assinei a PSN Extra de 12 meses e os preços são muito acessíveis.",
   },
   {
     name: "Edson Holanda",
     image: "/reviews/edson-holanda.webp",
     quote:
-      "Excelente serviço e atendimento esse eu recomendo, jogos baratos e de qualidade!",
+      "Excelente serviço e atendimento ágil! Jogos originais, de qualidade e com ótimo preço.",
   },
 ]
 
@@ -197,6 +198,7 @@ export default async function Home(props: {
           </div>
         </div>
       </section>
+      <Faq countryCode={countryCode} />
     </>
   )
 }

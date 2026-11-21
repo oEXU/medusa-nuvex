@@ -1,7 +1,9 @@
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
+import { getMockProduct } from "@lib/data/mock-products"
 import { listProducts } from "@lib/data/products"
 import { getRegion, listRegions } from "@lib/data/regions"
+import { decodeProductHandle } from "@lib/util/decode-product-handle"
 import ProductTemplate from "@modules/products/templates"
 import { HttpTypes } from "@medusajs/types"
 import { isVariantInStock } from "@lib/util/inventory"
@@ -21,7 +23,7 @@ export const revalidate = 60
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params
-  const { handle } = params
+  const handle = decodeProductHandle(params.handle)
   const region = await getRegion(params.countryCode)
 
   if (!region) {
@@ -31,7 +33,10 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const product = await listProducts({
     countryCode: params.countryCode,
     queryParams: { handle },
-  }).then(({ response }) => response.products[0])
+  }).then(
+    ({ response }) =>
+      response.products[0] ?? getMockProduct(handle, region)
+  )
 
   if (!product) {
     notFound()
@@ -105,6 +110,7 @@ const ProductMetaTags = ({
 
 export default async function ProductPage(props: Props) {
   const params = await props.params
+  const handle = decodeProductHandle(params.handle)
   const region = await getRegion(params.countryCode)
 
   if (!region) {
@@ -113,8 +119,11 @@ export default async function ProductPage(props: Props) {
 
   const pricedProduct = await listProducts({
     countryCode: params.countryCode,
-    queryParams: { handle: params.handle },
-  }).then(({ response }) => response.products[0])
+    queryParams: { handle },
+  }).then(
+    ({ response }) =>
+      response.products[0] ?? getMockProduct(handle, region)
+  )
 
   if (!pricedProduct) {
     notFound()

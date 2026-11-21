@@ -16,6 +16,10 @@ export function sortProducts(
   sortBy: SortOptions
 ): HttpTypes.StoreProduct[] {
   const sortedProducts = products as MinPricedProduct[]
+  const gtaViOrder: Record<string, number> = {
+    "grand-theft-auto-vi-ultimate-edition-primaria": 0,
+    "grand-theft-auto-vi-ultimate-edition-secundaria": 1,
+  }
 
   if (["price_asc", "price_desc"].includes(sortBy)) {
     // Precompute the minimum price for each product
@@ -46,5 +50,14 @@ export function sortProducts(
     })
   }
 
-  return sortedProducts
+  const gtaViProducts = sortedProducts
+    .filter((product) => product.handle && gtaViOrder[product.handle] !== undefined)
+    .sort((first, second) =>
+      gtaViOrder[first.handle!] - gtaViOrder[second.handle!]
+    )
+  const otherProducts = sortedProducts.filter(
+    (product) => !product.handle || gtaViOrder[product.handle] === undefined
+  )
+
+  return [...gtaViProducts, ...otherProducts]
 }

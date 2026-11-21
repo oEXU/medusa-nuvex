@@ -4,7 +4,7 @@ import type { SVGProps } from "react"
 export const storeCategories = [
   {
     id: "categoria-pc-perifericos",
-    label: "PC e Periféricos",
+    label: "PC",
     description: "Hardware, acessórios e setup",
     icon: "pc",
   },
@@ -20,18 +20,6 @@ export const storeCategories = [
     description: "Consoles e jogos Xbox",
     icon: "xbox",
   },
-  {
-    id: "categoria-switch",
-    label: "Nintendo Switch",
-    description: "Jogue em casa ou onde quiser",
-    icon: "switch",
-  },
-  {
-    id: "categoria-geek",
-    label: "Geek",
-    description: "Colecionáveis e cultura pop",
-    icon: "geek",
-  },
 ] as const
 
 type StoreCategoryIconProps = Pick<SVGProps<SVGSVGElement>, "className"> & {
@@ -45,8 +33,6 @@ export function StoreCategoryIcon({
   const imageSources = {
     playstation: "/category-ps5.png",
     xbox: "/category-xbox.png",
-    switch: "/category-switch.png",
-    geek: "/category-geek.png",
   }
 
   if (name !== "pc") {
@@ -54,10 +40,10 @@ export function StoreCategoryIcon({
       <Image
         src={imageSources[name]}
         alt=""
-        aria-hidden="true"
-        width={240}
-        height={180}
+        width={32}
+        height={32}
         className={className}
+        aria-hidden="true"
       />
     )
   }
@@ -65,17 +51,25 @@ export function StoreCategoryIcon({
   return (
     <svg
       aria-hidden="true"
-      viewBox="0 0 48 36"
+      viewBox="0 0 24 24"
       fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.7"
       className={className}
     >
-      <rect x="4" y="3" width="29" height="22" rx="2.5" />
-      <path d="M12 32h13m-6.5-7v7m15-19h9v18h-9zM8 20h21" />
-      <circle cx="38.5" cy="27.5" r=".7" fill="currentColor" />
+      <rect
+        x="3"
+        y="4"
+        width="18"
+        height="12"
+        rx="2"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <path
+        d="M7 20h10M12 16v4"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
     </svg>
   )
 }

@@ -15,6 +15,7 @@ type CartItem = {
   metadata?: Record<string, unknown> | null;
   requires_shipping: boolean;
   product?: {
+    handle?: string | null;
     metadata?: Record<string, unknown> | null;
   } | null;
 };
@@ -24,10 +25,13 @@ type CartWithItems = {
   shipping_methods?: { id: string }[] | null;
 };
 
+const GTA_VI_MEDIA_HANDLES = new Set([
+  "grand-theft-auto-vi-ultimate-edition-primaria",
+  "grand-theft-auto-vi-ultimate-edition-secundaria",
+]);
+
 const hasMediaChoice = (item: CartItem) =>
-  item.product?.metadata?.media_fisica_digital === true ||
-  item.metadata?.media_type === "physical" ||
-  item.metadata?.media_type === "digital";
+  !!item.product?.handle && GTA_VI_MEDIA_HANDLES.has(item.product.handle);
 
 export async function POST(
   req: MedusaRequest<StoreCartDeliveryModeRequest>,
@@ -41,6 +45,7 @@ export async function POST(
       "items.id",
       "items.metadata",
       "items.requires_shipping",
+      "items.product.handle",
       "items.product.metadata",
       "shipping_methods.id",
     ],
@@ -69,25 +74,13 @@ export async function POST(
   }
 
   if (
-    (!itemId &&
-      mediaType === "digital" &&
-      items.some((item) => !hasMediaChoice(item) && item.requires_shipping)) ||
-    (itemId && itemsToUpdate.some((item) => !hasMediaChoice(item)))
+    (!itemId && items.some((item) => !hasMediaChoice(item))) ||
+    (mediaType === "digital" &&
+      itemsToUpdate.some((item) => !hasMediaChoice(item)))
   ) {
     throw new MedusaError(
       MedusaError.Types.INVALID_DATA,
-      "Digital delivery is unavailable for one or more items in this cart.",
-    );
-  }
-
-  if (
-    !itemId &&
-    mediaType === "physical" &&
-    items.some((item) => !hasMediaChoice(item) && !item.requires_shipping)
-  ) {
-    throw new MedusaError(
-      MedusaError.Types.INVALID_DATA,
-      "Physical delivery is unavailable for one or more items in this cart.",
+      "Delivery mode selection is only available for GTA VI items.",
     );
   }
 
@@ -98,20 +91,26 @@ export async function POST(
         item_id: item.id,
         update: {
           requires_shipping: mediaType === "physical",
-          metadata: {
-            ...item.metadata,
-            media_type: mediaType,
-          },
+          ...(hasMediaChoice(item)
+            ? {
+                metadata: {
+                  ...item.metadata,
+                  media_type: mediaType,
+                },
+              }
+            : {}),
         },
       },
     });
   }
 
-  const allItemsNoLongerRequireShipping = items.every((item) =>
-    itemsToUpdate.some((updatedItem) => updatedItem.id === item.id)
-      ? mediaType === "digital"
-      : !item.requires_shipping,
-  );
+  const allItemsNoLongerRequireShipping = items.every((item) => {
+    if (itemsToUpdate.some((updatedItem) => updatedItem.id === item.id)) {
+      return mediaType === "digital";
+    }
+
+    return hasMediaChoice(item) && !item.requires_shipping;
+  });
 
   if (allItemsNoLongerRequireShipping && cart?.shipping_methods?.length) {
     await removeCartShippingMethodsWorkflow(req.scope).run({

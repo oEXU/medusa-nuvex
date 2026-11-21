@@ -1,0 +1,17 @@
+button[class*="grid-cols-[24px_1fr_15px]"] > span:first-child {
+  position: relative;
+}
+
+button[class*="grid-cols-[24px_1fr_15px]"]
+  > span:first-child
+  > span[data-radix-avatar-fallback] {
+  visibility: hidden;
+}
+
+button[class*="grid-cols-[24px_1fr_15px]"] > span:first-child::after {
+  position: absolute;
+  inset: 0;
+  background: url("/static/nuvex-admin-mark.png") center / 38px 38px no-repeat;
+  content: "";
+  pointer-events: none;
+}

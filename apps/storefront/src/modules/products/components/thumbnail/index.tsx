@@ -1,6 +1,7 @@
 import { Container, clx } from "@modules/common/components/ui"
 import Image from "next/image"
 import React from "react"
+import { resolveImageUrl } from "@lib/util/image-url"
 
 import PlaceholderImage from "@modules/common/icons/placeholder-image"
 
@@ -54,11 +55,10 @@ const ImageOrPlaceholder = ({
 }: Pick<ThumbnailProps, "size" | "alt"> & { image?: string }) => {
   return image ? (
     <Image
-      src={image}
+      src={resolveImageUrl(image)}
       alt={alt ?? ""}
       className="absolute inset-0 object-cover object-center"
       draggable={false}
-      quality={50}
       sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 480px, 800px"
       fill
     />

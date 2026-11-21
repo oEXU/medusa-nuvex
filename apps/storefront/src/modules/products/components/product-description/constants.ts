@@ -1,0 +1,1 @@
+export const DESCRIPTION_LINE_LIMIT = 13

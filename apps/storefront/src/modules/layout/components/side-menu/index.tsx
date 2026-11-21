@@ -7,6 +7,7 @@ import {
   Transition,
 } from "@headlessui/react"
 import { ArrowRightMini, XMark } from "@medusajs/icons"
+import { notifyCategorySelected } from "@lib/util/category-events"
 import {
   getCategoryDescription,
   getCategoryLabel,
@@ -78,7 +79,10 @@ const SideMenu = ({ countryCode }: SideMenuProps) => {
                       <li key={category.id}>
                         <LocalizedClientLink
                           href={`/#${category.id}`}
-                          onClick={close}
+                          onClick={() => {
+                            notifyCategorySelected(category.id)
+                            close()
+                          }}
                           data-testid={`${category.id}-menu-link`}
                           className="group flex h-full min-h-[92px] items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 transition hover:-translate-y-0.5 hover:border-fuchsia-500/50 hover:bg-slate-50 hover:shadow-md small:min-h-[108px] small:flex-col small:items-start small:justify-between small:p-4"
                         >
@@ -92,11 +96,7 @@ const SideMenu = ({ countryCode }: SideMenuProps) => {
                           >
                             <StoreCategoryIcon
                               name={category.icon}
-                              className={
-                                category.icon === "switch"
-                                  ? "h-5 w-10"
-                                  : "h-7 w-8"
-                              }
+                              className="h-7 w-8"
                             />
                           </span>
                           <span className="min-w-0">

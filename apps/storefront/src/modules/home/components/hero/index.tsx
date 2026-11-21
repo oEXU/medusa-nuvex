@@ -2,7 +2,7 @@ import Image from "next/image"
 import { listFeaturedProductPlacements } from "@lib/data/featured-products"
 import { listProducts } from "@lib/data/products"
 import type { HttpTypes } from "@medusajs/types"
-import FeaturedCategoryProduct from "@modules/home/components/featured-category-product"
+import CategoryProductGrid from "@modules/home/components/category-product-grid"
 import RotatingHeadline from "@modules/home/components/hero/rotating-headline"
 import { listPromoBanners } from "@lib/data/promo-banners"
 import PromoBannerCarousel from "@modules/layout/components/promo-banner-carousel"
@@ -65,30 +65,6 @@ function TrophyIcon({ className = "h-4 w-4" }: { className?: string }) {
   )
 }
 
-function GamepadIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 48 36"
-      fill="none"
-      className="h-8 w-10"
-    >
-      <path
-        d="M13.2 7.5h21.6c4.1 0 7.7 2.8 8.7 6.8l2.2 8.4c1.1 4.1-3.5 7.5-7.2 5.3l-7.2-4.3H16.7l-7.2 4.3c-3.7 2.2-8.3-1.2-7.2-5.3l2.2-8.4c1-4 4.6-6.8 8.7-6.8Z"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M14 13v8m-4-4h8m15-2h.02M37 19h.02"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  )
-}
-
 export default async function Hero({
   region,
   countryCode,
@@ -112,6 +88,10 @@ export default async function Hero({
       })
     : { response: { products: [] as HttpTypes.StoreProduct[] } }
   const productsById = new Map(products.map((product) => [product.id, product]))
+  const gtaViOrder: Record<string, number> = {
+    "grand-theft-auto-vi-ultimate-edition-primaria": 0,
+    "grand-theft-auto-vi-ultimate-edition-secundaria": 1,
+  }
   const productsByCategory = new Map(
     storeCategories.map((category) => {
       const categoryProductIds = placements
@@ -119,13 +99,28 @@ export default async function Hero({
         .sort((a, b) => a.sort_order - b.sort_order)
         .map((placement) => placement.product_id)
 
+      const categoryProducts = categoryProductIds
+        .map((productId) => productsById.get(productId))
+        .filter((product): product is HttpTypes.StoreProduct =>
+          Boolean(product),
+        )
+
+      categoryProducts.sort((first, second) => {
+        const firstOrder = first.handle ? gtaViOrder[first.handle] : undefined
+        const secondOrder = second.handle ? gtaViOrder[second.handle] : undefined
+
+        if (firstOrder !== undefined || secondOrder !== undefined) {
+          if (firstOrder === undefined) return 1
+          if (secondOrder === undefined) return -1
+          return firstOrder - secondOrder
+        }
+
+        return 0
+      })
+
       return [
         category.id,
-        categoryProductIds
-          .map((productId) => productsById.get(productId))
-          .filter((product): product is HttpTypes.StoreProduct =>
-            Boolean(product),
-          ),
+        categoryProducts,
       ]
     }),
   )
@@ -160,16 +155,10 @@ export default async function Hero({
 
             <div className="mt-9 flex flex-col gap-3 xsmall:flex-row">
               <a
-                href="#catalogo"
+                href="#plataformas"
                 className="inline-flex min-h-12 items-center justify-center gap-3 rounded-xl bg-pink-700 px-6 text-sm font-bold text-white shadow-[0_10px_40px_rgba(190,24,93,0.2)] transition hover:-translate-y-0.5 hover:bg-pink-600"
               >
-                {translate(countryCode, "meetNuvex")} <ArrowIcon />
-              </a>
-              <a
-                href="#plataformas"
-                className="inline-flex min-h-12 items-center justify-center gap-3 rounded-xl border border-white/15 bg-white/[0.035] px-6 text-sm font-semibold text-white/85 transition hover:border-white/30 hover:bg-white/[0.07]"
-              >
-                {translate(countryCode, "explorePlatforms")}
+                {translate(countryCode, "explorePlatforms")} <ArrowIcon />
               </a>
             </div>
 
@@ -329,9 +318,7 @@ export default async function Hero({
                 <div className="flex h-12 w-14 shrink-0 items-center justify-center border border-fuchsia-300/20 bg-[#0b111c] text-white">
                   <StoreCategoryIcon
                     name={category.icon}
-                    className={
-                      category.icon === "switch" ? "h-6 w-12" : "h-8 w-10"
-                    }
+                    className="h-8 w-10"
                   />
                 </div>
                 <div className="min-w-0 flex-1">
@@ -344,14 +331,11 @@ export default async function Hero({
                 </div>
               </div>
               {productsByCategory.get(category.id)?.length ? (
-                <ul className="grid grid-cols-2 gap-3 small:grid-cols-2 medium:grid-cols-3 large:grid-cols-4">
-                  {productsByCategory.get(category.id)?.map((product) => (
-                    <FeaturedCategoryProduct
-                      key={product.id}
-                      product={product}
-                    />
-                  ))}
-                </ul>
+                <CategoryProductGrid
+                  products={productsByCategory.get(category.id) ?? []}
+                  categoryId={category.id}
+                  countryCode={countryCode}
+                />
               ) : (
                 <div className="flex min-h-14 items-center gap-3 py-2">
                   <span aria-hidden="true" className="h-5 w-1 bg-pink-400/70" />

@@ -1,25 +1,35 @@
-import { HttpTypes } from "@medusajs/types"
+import type { HttpTypes } from "@medusajs/types"
 
 export type CartMediaType = "physical" | "digital"
 
-const hasMediaChoice = (item: HttpTypes.StoreCartLineItem) =>
-  item.product?.metadata?.media_fisica_digital === true ||
-  item.metadata?.media_type === "physical" ||
+const GTA_VI_MEDIA_HANDLES = new Set([
+  "grand-theft-auto-vi-ultimate-edition-primaria",
+  "grand-theft-auto-vi-ultimate-edition-secundaria",
+])
+
+const isGtaViItem = (item: HttpTypes.StoreCartLineItem) =>
+  (item.product_handle && GTA_VI_MEDIA_HANDLES.has(item.product_handle)) ||
+  (!!item.product?.handle && GTA_VI_MEDIA_HANDLES.has(item.product.handle))
+
+export const isDigitalGtaViItem = (item: HttpTypes.StoreCartLineItem) =>
+  isGtaViItem(item) &&
+  item.requires_shipping === false &&
   item.metadata?.media_type === "digital"
+
+export const hasCartMediaChoice = (
+  cart: Pick<HttpTypes.StoreCart, "items"> | null | undefined
+) => {
+  const items = cart?.items ?? []
+
+  return items.length > 0 && items.every(isGtaViItem)
+}
 
 export const isDigitalOnlyCart = (
   cart: Pick<HttpTypes.StoreCart, "items"> | null | undefined
 ) => {
   const items = cart?.items ?? []
 
-  return (
-    items.length > 0 &&
-    items.every(
-      (item) =>
-        item.requires_shipping === false &&
-        item.metadata?.media_type !== "physical"
-    )
-  )
+  return items.length > 0 && items.every(isDigitalGtaViItem)
 }
 
 export const canSelectCartMediaType = (
@@ -29,9 +39,9 @@ export const canSelectCartMediaType = (
   const items = cart?.items ?? []
 
   return (
-    items.length > 0 &&
+    hasCartMediaChoice(cart) &&
     items.every((item) => {
-      if (hasMediaChoice(item)) {
+      if (isGtaViItem(item)) {
         return true
       }
 

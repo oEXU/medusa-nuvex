@@ -155,13 +155,15 @@ export default function Footer({ countryCode }: { countryCode: string }) {
             <p className="mt-2 text-sm leading-6 text-slate-400">
               {translate(countryCode, "contactHelp")}
             </p>
-            <LocalizedClientLink
-              href="/contact"
+            <a
+              href="https://wa.me/5511947962725"
+              target="_blank"
+              rel="noreferrer"
               className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-pink-200 transition hover:text-white"
             >
               {translate(countryCode, "contactUs")}{" "}
               <span aria-hidden="true">→</span>
-            </LocalizedClientLink>
+            </a>
           </div>
         </div>
 

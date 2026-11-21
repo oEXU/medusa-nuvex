@@ -221,7 +221,7 @@ async function completeLogin(
   await revalidateCacheTag("customers")
 
   try {
-    await transferCart()
+    await transferCart(token)
   } catch (error) {
     return { state: "error", error: String(error) }
   }
@@ -258,14 +258,16 @@ export async function signout(countryCode: string) {
   redirect(`/${countryCode}/account`)
 }
 
-export async function transferCart() {
+export async function transferCart(token?: string) {
   const cartId = await getCartId()
 
   if (!cartId) {
     return
   }
 
-  const headers = await getAuthHeaders()
+  const headers = token
+    ? { authorization: `Bearer ${token}` }
+    : await getAuthHeaders()
 
   await sdk.store.cart.transferCart(cartId, {}, headers)
 

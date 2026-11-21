@@ -1,6 +1,8 @@
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import ChevronDown from "@modules/common/icons/chevron-down"
+import TrustSeals from "@modules/checkout/components/trust-seals"
 import { translate } from "@lib/util/store-locale"
+import Image from "next/image"
 
 export default async function CheckoutLayout({
   children,
@@ -29,16 +31,35 @@ export default async function CheckoutLayout({
           </LocalizedClientLink>
           <LocalizedClientLink
             href="/"
-            className="txt-compact-xlarge-plus text-ui-fg-subtle hover:text-ui-fg-base uppercase"
+            className="flex h-12 items-center px-1"
             data-testid="store-link"
           >
-            {translate(countryCode, "store")}
+            <Image
+              src="/nuve-x-logo.png"
+              alt="NuveX Games"
+              width={54}
+              height={40}
+              className="h-10 w-auto object-contain brightness-0"
+            />
           </LocalizedClientLink>
           <div className="flex-1 basis-0" />
         </nav>
       </div>
       <div className="relative" data-testid="checkout-container">
+        <div className="content-container pb-0 pt-6 small:pt-8">
+          <Image
+            src="/checkout-gta-vi-banner.gif"
+            alt="Semana do GTA VI: R$ 50 OFF para garantir o jogo com o cupom VEMGTA"
+            width={2870}
+            height={678}
+            unoptimized
+            priority
+            sizes="(min-width: 1280px) 1216px, calc(100vw - 2rem)"
+            className="h-auto w-full rounded-lg"
+          />
+        </div>
         {children}
+        <TrustSeals />
       </div>
     </div>
   )

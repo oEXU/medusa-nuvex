@@ -4,7 +4,6 @@ import { isDigitalOnlyCart } from "@lib/util/cart-media"
 import { HttpTypes } from "@medusajs/types"
 import Addresses from "@modules/checkout/components/addresses"
 import Payment from "@modules/checkout/components/payment"
-import Review from "@modules/checkout/components/review"
 import Shipping from "@modules/checkout/components/shipping"
 
 export default async function CheckoutForm({
@@ -41,8 +40,6 @@ export default async function CheckoutForm({
       />
 
       <Payment cart={cart} availablePaymentMethods={paymentMethods} />
-
-      <Review cart={cart} />
     </div>
   )
 }

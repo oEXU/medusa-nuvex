@@ -7,6 +7,9 @@ checkEnvVariables()
  */
 const S3_HOSTNAME = process.env.MEDUSA_CLOUD_S3_HOSTNAME
 const S3_PATHNAME = process.env.MEDUSA_CLOUD_S3_PATHNAME
+const MEDUSA_BACKEND_URL = (
+  process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000"
+).replace(/\/$/, "")
 
 /**
  * @type {import('next').NextConfig}
@@ -36,6 +39,12 @@ const nextConfig = {
           source: "/:countryCode/products/:handle([^/.]+)",
           has: [{ type: "header", key: "accept", value: ".*text/markdown.*" }],
           destination: "/:countryCode/products/:handle/markdown",
+        },
+      ],
+      afterFiles: [
+        {
+          source: "/medusa-assets/:path*",
+          destination: `${MEDUSA_BACKEND_URL}/static/:path*`,
         },
       ],
     }

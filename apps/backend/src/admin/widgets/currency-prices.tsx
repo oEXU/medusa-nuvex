@@ -3,6 +3,7 @@ import { Button, Container, Heading } from "@medusajs/ui"
 import Medusa from "@medusajs/js-sdk"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
+import { convertBrlToUsd } from "../../lib/currency-pricing"
 
 const sdk = new Medusa({
   baseUrl: "/",
@@ -48,10 +49,7 @@ const CurrencyPricesWidget = ({ data: product }: WidgetProps) => {
 
   const savePrices = useMutation({
     mutationFn: async (variant: ProductVariant) => {
-      const current = values[variant.id] ?? {
-        brl: getAmount(variant, "brl"),
-        usd: getAmount(variant, "usd"),
-      }
+      const current = values[variant.id] ?? getCurrentValues(variant)
 
       const brlAmount = Number(current.brl)
       const usdAmount = Number(current.usd)
@@ -97,7 +95,8 @@ const CurrencyPricesWidget = ({ data: product }: WidgetProps) => {
         <Heading level="h2">Preços por moeda</Heading>
         <p className="mt-1 text-sm text-ui-fg-subtle">
           Defina os preços de cada variante para as lojas do Brasil e dos
-          Estados Unidos.
+          Estados Unidos. O USD é calculado a partir do BRL quando ainda não
+          existe um preço definido, usando R$ 5,20 por US$ 1.
         </p>
       </div>
 
@@ -110,10 +109,7 @@ const CurrencyPricesWidget = ({ data: product }: WidgetProps) => {
       ) : variants.length ? (
         <div className="flex flex-col gap-4">
           {variants.map((variant) => {
-            const current = values[variant.id] ?? {
-              brl: getAmount(variant, "brl"),
-              usd: getAmount(variant, "usd"),
-            }
+            const current = values[variant.id] ?? getCurrentValues(variant)
 
             return (
               <div
@@ -131,12 +127,17 @@ const CurrencyPricesWidget = ({ data: product }: WidgetProps) => {
                 <PriceInput
                   label="Preço em reais (BRL)"
                   value={current.brl}
-                  onChange={(brl) =>
+                  onChange={(brl) => {
+                    const usd = getAmount(variant, "usd")
                     setValues((previous) => ({
                       ...previous,
-                      [variant.id]: { ...current, brl },
+                      [variant.id]: {
+                        ...current,
+                        brl,
+                        usd: usd ? current.usd : getConvertedUsd(brl),
+                      },
                     }))
-                  }
+                  }}
                 />
                 <PriceInput
                   label="Price in US dollars (USD)"
@@ -178,6 +179,23 @@ const getAmount = (variant: ProductVariant, currencyCode: string) => {
     (item) => item.currency_code.toLowerCase() === currencyCode,
   )
   return price ? String(price.amount) : ""
+}
+
+const getCurrentValues = (variant: ProductVariant) => {
+  const brl = getAmount(variant, "brl")
+  const usd = getAmount(variant, "usd")
+
+  return {
+    brl,
+    usd: usd || getConvertedUsd(brl),
+  }
+}
+
+const getConvertedUsd = (brl: string) => {
+  const amount = Number(brl)
+  return Number.isFinite(amount) && amount > 0
+    ? String(convertBrlToUsd(amount))
+    : ""
 }
 
 const buildPrice = (

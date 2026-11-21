@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="robots" content="noindex, nofollow">
+	<title>Área Pagamento - NuveX Games</title>
+	<link rel="icon" type="image/png" href="./assets/payment/nuvex-games.png">
+	<link rel="stylesheet" href="./checkout-mp.css">
+</head>
+<body class="mpc mpc-view-thankyou">
+<section class="mpc-page" data-mpc-page="thankyou" data-mpc-view="pix-qr">
+	<div class="mpc-topbar">
+		<div class="mpc-topbar__in">
+			<a class="mpc-brand" href="/" aria-label="Mercado Pago">
+				<img class="mpc-brand__img" src="./assets/payment/mercado-pago.svg" alt="Mercado Pago">
+			</a>
+			<span class="mpc-topbar__pay">
+				<span class="mpc-topbar__pay-txt">Pagamentos processados por</span>
+				<img class="mpc-topbar__pay-logo" src="./assets/payment/mercado-pago.svg" alt="Mercado Pago" width="118" height="48">
+			</span>
+			<div class="mpc-topbar__actions">
+				<a class="mpc-btn-enter mpc-press" href="/minha-conta/">Entrar</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="mpc-wrap--760">
+		<div id="loadError" class="mpc-alert" role="alert" hidden></div>
+		<div class="mpc-stack" data-mpc-pix-live>
+			<div class="mpc-card mpc-hero">
+				<div class="mpc-hero__ic mpc-hero__ic--green"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="7" width="16" height="10" rx="2" stroke="#00A650" stroke-width="1.6"></rect><circle cx="12" cy="12" r="2.2" stroke="#00A650" stroke-width="1.6"></circle></svg></div>
+				<div class="mpc-hero__kicker">Falta pouco!</div>
+				<h1 class="mpc-hero__h1">Pague <span id="paymentAmount" class="is-green mpc-num">R$ 129,90</span> via Pix para concluir sua compra</h1>
+				<div class="mpc-countpill"><span id="timerLabel">Este código expira em</span><strong id="countdown" class="mpc-num" data-mpc-countdown>30:00</strong></div>
+			</div>
+
+			<div class="mpc-card">
+				<div class="mpc-card__head">Resumo da compra</div>
+				<div class="mpc-sum__rows mpc-sum__rows--ty">
+					<div class="mpc-row">
+						<span id="productName">Produto de demonstração</span>
+						<span id="productPrice" class="mpc-num">R$ 129,90</span>
+					</div>
+				</div>
+				<div class="mpc-ty-total">
+					<span class="mpc-sum__total-lbl">Total</span>
+					<span class="mpc-sum__total-val">
+						<strong id="totalPrice" class="mpc-ty-total__big mpc-num">R$ 129,90</strong>
+					</span>
+				</div>
+			</div>
+
+			<div class="mpc-card mpc-card--p26">
+				<div class="mpc-h18">Escaneie o código QR para pagar</div>
+				<div class="mpc-qrrow">
+					<div class="mpc-qrrow__img">
+						<div id="qrPlaceholder" class="mpc-qr mpc-qr--ph" role="img" aria-label="QR Code demonstrativo, não pagável">
+							<span class="mpc-qr__veil"></span>
+							<span class="mpc-qr__pill">Demonstração</span>
+						</div>
+						<img id="qrCode" width="200" height="200" alt="QR Code Pix" class="mpc-qr" hidden>
+					</div>
+					<ol class="mpc-qrsteps">
+						<li>Acesse seu Internet Banking ou app de pagamentos.</li>
+						<li>Escolha pagar via <strong>Pix</strong>.</li>
+						<li>Escaneie o código ao lado.</li>
+					</ol>
+				</div>
+				<div class="mpc-greennote">
+					<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="flex:none;margin-top:1px"><circle cx="8" cy="8" r="6.5" stroke="#00A650" stroke-width="1.4"></circle><polyline points="8,4.5 8,8 10.5,9.5" stroke="#00A650" stroke-width="1.4" fill="none" stroke-linecap="round"></polyline></svg>
+					<span><strong class="is-green">Pague e será creditado na hora.</strong> Confirmamos a data de entrega assim que o pagamento for aprovado.</span>
+				</div>
+				<div class="mpc-hr"></div>
+				<div class="mpc-h18">Ou copie este código para fazer o pagamento</div>
+				<div class="mpc-sub13 mpc-sub13--mt4">Escolha pagar via Pix pelo seu Internet Banking e cole o seguinte código:</div>
+				<div class="mpc-copyrow">
+					<input id="pixCode" type="text" readonly value="DADOS-PIX-DE-DEMONSTRACAO-NAO-PAGAVEL" class="mpc-copyinput mpc-num" data-mpc-brcode aria-label="Código Pix Copia e Cola">
+					<button id="copyButton" type="button" class="mpc-btn mpc-btn--copy mpc-press">Copiar código</button>
+				</div>
+				<p id="copyStatus" class="mpc-sub13" role="status" aria-live="polite"></p>
+				<div class="mpc-panel__seal mpc-panel__seal--mt20">
+					<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="#00A650" stroke-width="1.4"></rect><path d="M5.5 7 V5 a2.5 2.5 0 0 1 5 0 V7" stroke="#00A650" stroke-width="1.4" fill="none"></path></svg>
+					<span>Pagamento seguro · código com validade de 30 minutos</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="mpc-stack" data-mpc-pix-expired hidden>
+			<div class="mpc-card mpc-hero">
+				<div class="mpc-hero__ic mpc-hero__ic--surface"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="rgba(0,0,0,.55)" stroke-width="1.6"></circle><polyline points="12,7 12,12 15.5,14" stroke="rgba(0,0,0,.55)" stroke-width="1.6" fill="none" stroke-linecap="round"></polyline></svg></div>
+				<h1 class="mpc-hero__h1 mpc-hero__h1--mt0">Este código Pix expirou</h1>
+				<div class="mpc-panel__sub mpc-panel__sub--mt8">Atualize a página para buscar um novo QR Code.</div>
+				<div class="mpc-qr-expired-wrap"><div class="mpc-qr mpc-qr--ph"><span class="mpc-qr__veil"></span><span class="mpc-qr__pill">QR expirado</span></div></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="mpc-benefits">
+		<div class="mpc-benefits__in">
+			<div class="mpc-benefit"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2" y="7" width="12" height="9" rx="1" stroke="#00A650" stroke-width="1.6" fill="none"></rect><path d="M14 10 H18 L21 13 V16 H14 Z" stroke="#00A650" stroke-width="1.6" fill="none" stroke-linejoin="round"></path><circle cx="6.5" cy="17.5" r="1.8" stroke="#00A650" stroke-width="1.6" fill="none"></circle><circle cx="17.5" cy="17.5" r="1.8" stroke="#00A650" stroke-width="1.6" fill="none"></circle></svg><span>Frete para todo o Brasil</span></div>
+			<div class="mpc-benefit"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><g transform="translate(2.4 2.4) scale(1.2)"><path d="M11.917 11.71a2.046 2.046 0 0 1-1.454-.602l-2.1-2.1a.4.4 0 0 0-.551 0l-2.108 2.108a2.044 2.044 0 0 1-1.454.602h-.414l2.66 2.66c.83.83 2.177.83 3.007 0l2.667-2.668h-.253zM4.25 4.282c.55 0 1.066.214 1.454.602l2.108 2.108a.39.39 0 0 0 .552 0l2.1-2.1a2.044 2.044 0 0 1 1.453-.602h.253L9.503 1.623a2.127 2.127 0 0 0-3.007 0l-2.66 2.66h.414zM14.377 5.898l-1.612-1.612a.307.307 0 0 1-.114.023h-.733c-.379 0-.75.154-1.017.422l-2.1 2.1a1.005 1.005 0 0 1-1.425 0L5.268 4.723a1.442 1.442 0 0 0-1.018-.422h-.9a.306.306 0 0 1-.109-.021L1.623 5.898c-.83.83-.83 2.177 0 3.007l1.618 1.618a.305.305 0 0 1 .108-.022h.901c.38 0 .75-.153 1.018-.421L7.376 7.97a1.034 1.034 0 0 1 1.426 0l2.1 2.1c.267.268.638.421 1.017.421h.733c.04 0 .079.01.114.024l1.611-1.612c.83-.83.83-2.177 0-3.007" fill="#32BCAD"></path></g></svg><span>5% de desconto no Pix</span></div>
+			<div class="mpc-benefit"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2" stroke="rgba(0,0,0,.55)" stroke-width="1.6" fill="none"></rect><line x1="8.5" y1="8" x2="15.5" y2="8" stroke="rgba(0,0,0,.55)" stroke-width="1.6" fill="none"></line><line x1="8.5" y1="12" x2="15.5" y2="12" stroke="rgba(0,0,0,.55)" stroke-width="1.6" fill="none"></line><line x1="8.5" y1="16" x2="13" y2="16" stroke="rgba(0,0,0,.55)" stroke-width="1.6" fill="none"></line></svg><span>Produtos 100% originais com Nota Fiscal</span></div>
+			<div class="mpc-benefit"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.8 L20 5.6 V11 C20 16 16.7 19.9 12 21.6 C7.3 19.9 4 16 4 11 V5.6 Z" stroke="#00A650" stroke-width="1.6" fill="none" stroke-linejoin="round"></path><polyline points="8.5,12 11,14.5 15.5,9.5" stroke="#00A650" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"></polyline></svg><span>Compra 100% segura</span></div>
+			<div class="mpc-benefit"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13 3h8v8L11 21l-8-8z" stroke="rgba(0,0,0,.55)" stroke-width="1.6" fill="none"></path><circle cx="17" cy="7" r="1.4" stroke="rgba(0,0,0,.55)" stroke-width="1.6" fill="none"></circle></svg><span>Até 12x sem juros</span></div>
+		</div>
+	</div>
+
+	<div class="mpc-foot">
+		<div class="mpc-foot__row">
+			<div class="mpc-foot__seal">
+				<span class="mpc-foot__seal-ic"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="#00A650" stroke-width="1.4"></rect><path d="M5.5 7 V5 a2.5 2.5 0 0 1 5 0 V7" stroke="#00A650" stroke-width="1.4" fill="none"></path></svg></span>
+				<span><strong>Ambiente 100% seguro</strong><span>Site blindado · Certificado SSL</span></span>
+			</div>
+			<div class="mpc-foot__badges">
+				<img class="mpc-brandlogo" src="./assets/payment/cartao-mastercard.svg" alt="Mastercard" width="33" height="22">
+				<img class="mpc-brandlogo" src="./assets/payment/cartao-visa.svg" alt="Visa" width="33" height="22">
+				<img class="mpc-brandlogo" src="./assets/payment/cartao-american-express.svg" alt="American Express" width="33" height="22">
+				<img class="mpc-brandlogo" src="./assets/payment/cartao-elo.svg" alt="Elo" width="33" height="22">
+				<img class="mpc-brandlogo" src="./assets/payment/cartao-hipercard.svg" alt="Hipercard" width="33" height="22">
+				<img class="mpc-brandlogo" src="./assets/payment/pix.svg" alt="Pix" width="33" height="22">
+			</div>
+		</div>
+		<div class="mpc-foot__more" data-mpc-more>
+			<button type="button" class="mpc-foot__more-btn" data-mpc-more-btn aria-expanded="false" aria-controls="mpc-foot-panel">
+				<span class="mpc-foot__more-line" aria-hidden="true"></span>
+				<span class="mpc-foot__more-label">Mais informações <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><polyline points="4,6 8,10 12,6" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"></polyline></svg></span>
+				<span class="mpc-foot__more-line" aria-hidden="true"></span>
+			</button>
+			<div class="mpc-foot__more-panel" id="mpc-foot-panel" data-mpc-more-panel>
+				<div class="mpc-foot__more-inner">
+					<div class="mpc-foot__links">
+						<a href="/politica-de-entrega-e-frete/">Entrega e Frete</a>
+						<a href="/refund_returns/">Troca e Devolução</a>
+						<a href="/politica-de-pagamento/">Formas de Pagamento</a>
+						<a href="/politica-de-seguranca/">Segurança</a>
+						<a href="/privacy-policy/">Privacidade</a>
+						<a href="/politica-de-cookies/">Cookies</a>
+						<a href="/termos-e-condicoes-de-uso/">Termos de Uso</a>
+					</div>
+				</div>
+			</div>
+			<div class="mpc-foot__legal">
+				<span>NuveX Games pertence à TAURUS GAMES &amp; ELETRÔNICOS</span>
+				<span>CNPJ: 69.951.204/0001-29 · Tel / WhatsApp: <a href="https://wa.me/5511947962725">(11) 94796-2725</a></span>
+				<span>Rua Gen. Osório, 590, Santa Ifigênia, São Paulo/SP · CEP: 01213-900</span>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script>
+	(() => {
+		const PREVIEW_MODE = true;
+		const PRODUCT_ENDPOINT = "/api/checkout/product";
+		const QR_TTL_MS = 30 * 60 * 1000;
+		// Na integração, desative PREVIEW_MODE. O GET retorna productName, priceInCents, qrCodeDataUrl, pixCopyPaste e generatedAt (ISO).
+		const previewData = {
+			productName: "Produto de demonstração",
+			priceInCents: 12990,
+			qrCodeDataUrl: null,
+			pixCopyPaste: "DADOS-PIX-DE-DEMONSTRACAO-NAO-PAGAVEL",
+			generatedAt: new Date().toISOString()
+		};
+
+		const page = document.querySelector("[data-mpc-page]");
+		const liveView = document.querySelector("[data-mpc-pix-live]");
+		const expiredView = document.querySelector("[data-mpc-pix-expired]");
+		const loadError = document.getElementById("loadError");
+		const copyButton = document.getElementById("copyButton");
+		const copyStatus = document.getElementById("copyStatus");
+		let expiresAt;
+		let countdownTimer;
+
+		function formatPrice(cents) {
+			return new Intl.NumberFormat("pt-BR", {
+				style: "currency",
+				currency: "BRL"
+			}).format(cents / 100);
+		}
+
+		function validate(data) {
+			if (!data || typeof data.productName !== "string" || !data.productName.trim()) {
+				throw new Error("Nome do produto ausente.");
+			}
+			if (!Number.isSafeInteger(data.priceInCents) || data.priceInCents < 0) {
+				throw new Error("Valor do produto inválido.");
+			}
+			if (typeof data.pixCopyPaste !== "string" || !data.pixCopyPaste.trim()) {
+				throw new Error("Código Pix ausente.");
+			}
+			if (!Number.isFinite(Date.parse(data.generatedAt))) {
+				throw new Error("Data de geração do QR Code inválida.");
+			}
+			if (data.qrCodeDataUrl !== null &&
+				(typeof data.qrCodeDataUrl !== "string" ||
+					!/^data:image\/(?:png|svg\+xml);base64,[a-z\d+/]+=*$/i.test(data.qrCodeDataUrl))) {
+				throw new Error("QR Code inválido; envie uma imagem PNG ou SVG em base64.");
+			}
+			if (!PREVIEW_MODE && !data.qrCodeDataUrl) {
+				throw new Error("QR Code ausente.");
+			}
+			return { ...data, generatedAt: Date.parse(data.generatedAt) };
+		}
+
+		function generatePixPayload(priceInCents, productName) {
+			const amountStr = (priceInCents / 100).toFixed(2);
+			const cleanProd = (productName || "NuveX Games").replace(/[^a-zA-Z0-9 ]/g, "").substring(0, 20);
+			const txId = Math.random().toString(36).substring(2, 10).toUpperCase();
+			return `00020126580014BR.GOV.BCB.PIX0136nuvex.pix@mercadopago.com.br520400005303986540${amountStr.length < 10 ? '0' + amountStr.length : amountStr}${amountStr}5802BR5911NuveX Games6009Sao Paulo62${String(cleanProd.length + 8).padStart(2, "0")}0504${txId}6304`;
+		}
+
+		async function loadData() {
+			// 1. Verificar parâmetros passados via URL
+			const params = new URLSearchParams(window.location.search);
+			const urlProduct = params.get("productName") || params.get("product") || params.get("title");
+			const urlPrice = params.get("priceInCents") || params.get("price") || params.get("total") || params.get("amount");
+
+			// 2. Verificar dados sincronizados via sessionStorage / localStorage
+			let storageData = null;
+			try {
+				const raw = sessionStorage.getItem("mp_checkout_data") || localStorage.getItem("mp_checkout_data");
+				if (raw) {
+					storageData = JSON.parse(raw);
+				}
+			} catch (_) {}
+
+			let productName = urlProduct || storageData?.productName || previewData.productName;
+			let priceInCents = previewData.priceInCents;
+
+			if (urlPrice) {
+				const str = String(urlPrice).trim();
+				if (str.includes(".") || str.includes(",")) {
+					const normalized = parseFloat(str.replace(",", "."));
+					if (!isNaN(normalized)) {
+						priceInCents = Math.round(normalized * 100);
+					}
+				} else {
+					const parsed = parseInt(str, 10);
+					if (!isNaN(parsed) && parsed > 0) {
+						priceInCents = parsed;
+					}
+				}
+			} else if (storageData && typeof storageData.priceInCents === "number") {
+				priceInCents = storageData.priceInCents;
+			} else if (storageData && typeof storageData.totalAmount === "number") {
+				priceInCents = Math.round(storageData.totalAmount * 100);
+			}
+
+			const pixCopyPaste = params.get("pix") || storageData?.pixCopyPaste || generatePixPayload(priceInCents, productName);
+			const qrCodeDataUrl = params.get("qr") || storageData?.qrCodeDataUrl || null;
+
+			return {
+				productName,
+				priceInCents,
+				qrCodeDataUrl,
+				pixCopyPaste,
+				generatedAt: storageData?.generatedAt || new Date().toISOString(),
+				items: storageData?.items || null
+			};
+		}
+
+		function updateCountdown() {
+			const secondsLeft = Math.max(0, Math.ceil((expiresAt - Date.now()) / 1000));
+			document.getElementById("countdown").textContent =
+				`${String(Math.floor(secondsLeft / 60)).padStart(2, "0")}:${String(secondsLeft % 60).padStart(2, "0")}`;
+			if (secondsLeft === 0) {
+				clearInterval(countdownTimer);
+				page.setAttribute("data-mpc-view", "pix-expired");
+				liveView.hidden = true;
+				expiredView.hidden = false;
+				copyButton.disabled = true;
+			}
+		}
+
+		function render(data) {
+			const product = validate(data);
+			const amount = formatPrice(product.priceInCents);
+			document.getElementById("productName").textContent = product.productName;
+			document.getElementById("productPrice").textContent = amount;
+			document.getElementById("paymentAmount").textContent = amount;
+			document.getElementById("totalPrice").textContent = amount;
+			document.getElementById("pixCode").value = product.pixCopyPaste;
+
+			// Se houver múltiplos itens no carrinho, renderiza as linhas no resumo
+			if (data.items && Array.isArray(data.items) && data.items.length > 1) {
+				const sumRows = document.querySelector(".mpc-sum__rows--ty");
+				if (sumRows) {
+					sumRows.innerHTML = data.items.map((item) => {
+						const title = item.title || item.product_title || "Item";
+						const qty = item.quantity && item.quantity > 1 ? ` (${item.quantity}x)` : "";
+						const itemTotal = typeof item.total === "number"
+							? item.total * 100
+							: typeof item.unit_price === "number"
+							? item.unit_price * (item.quantity || 1) * 100
+							: product.priceInCents;
+						return `<div class="mpc-row"><span>${title}${qty}</span><span class="mpc-num">${formatPrice(Math.round(itemTotal))}</span></div>`;
+					}).join("");
+				}
+			}
+
+			// Gerar/exibir QR code
+			const image = document.getElementById("qrCode");
+			const placeholder = document.getElementById("qrPlaceholder");
+
+			if (product.qrCodeDataUrl) {
+				image.src = product.qrCodeDataUrl;
+				image.hidden = false;
+				if (placeholder) placeholder.hidden = true;
+			} else {
+				const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(product.pixCopyPaste)}`;
+				image.src = qrUrl;
+				image.onload = () => {
+					image.hidden = false;
+					if (placeholder) placeholder.hidden = true;
+				};
+				image.onerror = () => {
+					image.hidden = true;
+					if (placeholder) placeholder.hidden = false;
+				};
+			}
+
+			expiresAt = product.generatedAt + QR_TTL_MS;
+			updateCountdown();
+			countdownTimer = window.setInterval(updateCountdown, 1000);
+		}
+
+		copyButton.addEventListener("click", async () => {
+			try {
+				await navigator.clipboard.writeText(document.getElementById("pixCode").value);
+				copyStatus.textContent = "Código copiado.";
+			} catch {
+				copyStatus.textContent = "Não foi possível copiar. Selecione e copie o código manualmente.";
+			}
+		});
+
+		document.querySelector("[data-mpc-more-btn]").addEventListener("click", (event) => {
+			const button = event.currentTarget;
+			const more = button.closest("[data-mpc-more]");
+			const isOpen = more.classList.toggle("is-open");
+			button.setAttribute("aria-expanded", String(isOpen));
+		});
+
+		loadData()
+			.then((data) => render(data))
+			.catch((error) => {
+				loadError.textContent = `Não foi possível carregar o pagamento: ${error.message}`;
+				loadError.hidden = false;
+				copyButton.disabled = true;
+			});
+	})();
+</script>
+</body>
+</html>

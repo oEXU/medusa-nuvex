@@ -1,5 +1,7 @@
+import { getMockProduct } from "@lib/data/mock-products"
 import { listProducts } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
+import { decodeProductHandle } from "@lib/util/decode-product-handle"
 import { renderProductMarkdown } from "@lib/util/product-markdown"
 import { getRequestOrigin } from "@lib/util/site"
 
@@ -14,12 +16,16 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ countryCode: string; handle: string }> },
 ) {
-  const { countryCode, handle } = await params
+  const { countryCode, handle: rawHandle } = await params
+  const handle = decodeProductHandle(rawHandle)
   const region = await getRegion(countryCode)
   const product = region
     ? await listProducts({ countryCode, queryParams: { handle } })
-        .then(({ response }) => response.products[0])
-        .catch(() => undefined)
+        .then(
+          ({ response }) =>
+            response.products[0] ?? getMockProduct(handle, region)
+        )
+        .catch(() => getMockProduct(handle, region))
     : undefined
 
   if (!region || !product) {

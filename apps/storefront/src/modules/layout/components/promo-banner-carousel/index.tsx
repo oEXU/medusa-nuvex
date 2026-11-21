@@ -1,6 +1,7 @@
 "use client"
 
 import type { PromoBanner } from "@lib/data/promo-banners"
+import { resolveImageUrl } from "@lib/util/image-url"
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useRef, useState, useCallback } from "react"
@@ -18,10 +19,10 @@ const bannerTypeLabels: Record<PromoBanner["type"], string> = {
 const PromoBannerCarousel = ({ banners }: { banners: PromoBanner[] }) => {
   const [activeIndex, setActiveIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
-  const [touchStart, setTouchStart] = useState<number | null>(null)
-  const [touchEnd, setTouchEnd] = useState<number | null>(null)
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
+  const touchStartRef = useRef<number | null>(null)
+  const touchEndRef = useRef<number | null>(null)
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
@@ -62,16 +63,21 @@ const PromoBannerCarousel = ({ banners }: { banners: PromoBanner[] }) => {
 
   // Suporte a swipe de toque em celulares e tablets
   const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchEnd(null)
-    setTouchStart(e.targetTouches[0].clientX)
+    touchEndRef.current = null
+    touchStartRef.current = e.changedTouches[0]?.clientX ?? null
   }
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX)
+    touchEndRef.current = e.changedTouches[0]?.clientX ?? null
   }
 
   const handleTouchEnd = () => {
-    if (!touchStart || !touchEnd) return
+    const touchStart = touchStartRef.current
+    const touchEnd = touchEndRef.current
+    touchStartRef.current = null
+    touchEndRef.current = null
+
+    if (touchStart === null || touchEnd === null) return
     const distance = touchStart - touchEnd
     const minSwipeDistance = 45
 
@@ -91,8 +97,12 @@ const PromoBannerCarousel = ({ banners }: { banners: PromoBanner[] }) => {
       aria-label="Destaques e Banners da NuveX"
       aria-roledescription="carrossel"
       className="relative px-4 py-8 sm:px-6 sm:py-12 small:px-8"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
+      onPointerEnter={(event) => {
+        if (event.pointerType === "mouse") setIsPaused(true)
+      }}
+      onPointerLeave={(event) => {
+        if (event.pointerType === "mouse") setIsPaused(false)
+      }}
       onFocusCapture={() => setIsPaused(true)}
       onBlurCapture={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
@@ -104,7 +114,7 @@ const PromoBannerCarousel = ({ banners }: { banners: PromoBanner[] }) => {
         {/* Glow de ambiente holográfico atrás do carrossel */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -inset-1 rounded-[2.5rem] bg-gradient-to-r from-pink-600/25 via-purple-600/20 to-cyan-500/25 blur-2xl opacity-60 -z-10"
+          className="pointer-events-none absolute -inset-2 rounded-[2.5rem] bg-gradient-to-r from-pink-600/20 via-purple-600/15 to-cyan-500/20 blur-2xl opacity-50 -z-10"
         />
 
         {/* Card do Carrossel com Altura e Proporções 100% Responsivas */}
@@ -112,7 +122,7 @@ const PromoBannerCarousel = ({ banners }: { banners: PromoBanner[] }) => {
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          className="group relative h-[250px] xs:h-[300px] sm:h-[380px] md:h-[450px] lg:h-[490px] xl:h-[520px] w-full overflow-hidden rounded-2xl sm:rounded-3xl border border-white/15 bg-[#0b0818] shadow-[0_24px_60px_rgba(0,0,0,0.85)] ring-1 ring-white/10"
+          className="group relative h-[250px] xs:h-[300px] sm:h-[380px] md:h-[450px] lg:h-[490px] xl:h-[520px] w-full touch-pan-y overflow-hidden border border-white/15 bg-[#0b0818] shadow-[0_24px_60px_rgba(0,0,0,0.85)] ring-1 ring-white/10"
         >
           {/* Trilho de slides com transição ultra fluida */}
           <div
@@ -127,6 +137,8 @@ const PromoBannerCarousel = ({ banners }: { banners: PromoBanner[] }) => {
             {banners.map((banner, index) => {
               const isActive = index === activeIndex
               const isClickable = Boolean(banner.link_url)
+              const preserveImageComposition =
+                banner.image_only && !banner.mobile_image_url
 
               const ContentWrapper = isClickable ? Link : "div"
               const wrapperProps = isClickable
@@ -152,13 +164,13 @@ const PromoBannerCarousel = ({ banners }: { banners: PromoBanner[] }) => {
                     {/* Imagem do Banner - Desktop e Padrão */}
                     <div className="absolute inset-0 h-full w-full overflow-hidden">
                       <Image
-                        src={banner.image_url}
+                        src={resolveImageUrl(banner.image_url)}
                         alt={banner.alt_text || banner.title}
                         fill
                         unoptimized
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 95vw, 1280px"
                         priority={index === 0}
-                        className="object-cover object-center transition-transform duration-700 ease-out group-hover/slide:scale-[1.02]"
+                        className={`${preserveImageComposition ? "object-contain sm:object-cover" : "object-cover"} object-center transition-transform duration-700 ease-out group-hover/slide:scale-[1.02]`}
                       />
 
                       {/* Imagem Mobile Opcional dedicada se houver */}
@@ -166,10 +178,10 @@ const PromoBannerCarousel = ({ banners }: { banners: PromoBanner[] }) => {
                         <picture className="pointer-events-none absolute inset-0 sm:hidden">
                           <source
                             media="(max-width: 639px)"
-                            srcSet={banner.mobile_image_url}
+                            srcSet={resolveImageUrl(banner.mobile_image_url)}
                           />
                           <img
-                            src={banner.mobile_image_url}
+                            src={resolveImageUrl(banner.mobile_image_url)}
                             alt=""
                             aria-hidden="true"
                             className="h-full w-full object-cover object-center"

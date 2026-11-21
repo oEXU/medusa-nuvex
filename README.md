@@ -66,7 +66,11 @@ The local store is configured for Brazil: BRL is the default currency, Brazil is
 
 The default sales channel is still **Default Sales Channel**. A sales channel represents where products are available for sale (for example, the online store or a separate marketplace). For a single storefront, the default channel is appropriate; products must be assigned to it to be available there.
 
-The starter's sample products currently have EUR and USD prices, but no BRL prices. Add the actual BRL prices before selling those products in Brazil. Brazilian shipping rates and tax rules also need to be configured before checkout is production-ready.
+To add USD prices to catalog variants that have BRL prices but no USD price, run `npm exec medusa exec ./src/scripts/backfill-usd-prices.ts` from `apps/backend`. The script preserves existing USD prices and converts missing prices at R$ 5.20 per US$ 1 by default; set `BRL_PER_USD_RATE` to override the rate.
+
+If the Medusa Admin has a Brazilian stock location and shipping fulfillment set but no delivery options for Brazil, run `npm exec medusa exec ./src/scripts/ensure-brazil-delivery.ts` from `apps/backend`. The script safely adds the Brazil service zone, links the enabled manual fulfillment provider, and creates the standard and express options at the starter's configured rate of R$ 25.00. Configure actual shipping rates and tax rules before production.
+
+The starter's sample products currently have EUR and USD prices, but no BRL prices. Add the actual BRL prices before selling those sample products in Brazil.
 
 ## Project Structure
 

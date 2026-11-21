@@ -236,32 +236,32 @@ export default async function initial_data_seed({
   await createShippingOptionsWorkflow(container).run({
     input: [
       {
-        name: "Standard Shipping",
+        name: "PAC",
         price_type: "flat",
         provider_id: "manual_manual",
         service_zone_id: fulfillmentSet.service_zones[0].id,
         shipping_profile_id: shippingProfile.id,
         type: {
-          label: "Standard",
-          description: "Ship in 2-3 days.",
-          code: "standard",
+          label: "PAC",
+          description: "Entrega pelo PAC.",
+          code: "pac",
         },
         prices: [
           {
             currency_code: "usd",
-            amount: 10,
+            amount: 0,
           },
           {
             currency_code: "eur",
-            amount: 10,
+            amount: 0,
           },
           {
             currency_code: "brl",
-            amount: 25,
+            amount: 0,
           },
           {
             region_id: region.id,
-            amount: 10,
+            amount: 0,
           },
         ],
         rules: [
@@ -278,32 +278,32 @@ export default async function initial_data_seed({
         ],
       },
       {
-        name: "Express Shipping",
+        name: "SEDEX",
         price_type: "flat",
         provider_id: "manual_manual",
         service_zone_id: fulfillmentSet.service_zones[0].id,
         shipping_profile_id: shippingProfile.id,
         type: {
-          label: "Express",
-          description: "Ship in 24 hours.",
-          code: "express",
+          label: "SEDEX",
+          description: "Entrega por SEDEX.",
+          code: "sedex",
         },
         prices: [
           {
             currency_code: "usd",
-            amount: 10,
+            amount: 0,
           },
           {
             currency_code: "eur",
-            amount: 10,
+            amount: 0,
           },
           {
             currency_code: "brl",
-            amount: 25,
+            amount: 0,
           },
           {
             region_id: region.id,
-            amount: 10,
+            amount: 0,
           },
         ],
         rules: [

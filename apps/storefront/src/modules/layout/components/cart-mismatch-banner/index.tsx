@@ -5,26 +5,26 @@ import { ExclamationCircleSolid } from "@medusajs/icons"
 import { StoreCart, StoreCustomer } from "@medusajs/types"
 import { Button } from "@modules/common/components/ui"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
+
 function CartMismatchBanner(props: {
   customer: StoreCustomer
   cart: StoreCart
 }) {
   const { customer, cart } = props
   const router = useRouter()
+  const attemptedTransfer = useRef(false)
+  const transferInProgress = useRef(false)
   const [isPending, setIsPending] = useState(false)
   const [actionText, setActionText] = useState("Run transfer again")
   const [error, setError] = useState<string | null>(null)
 
-  if (!customer || !!cart.customer_id) {
-    return
-  }
-
-  const handleSubmit = async () => {
-    if (isPending) {
+  const handleSubmit = useCallback(async () => {
+    if (transferInProgress.current) {
       return
     }
 
+    transferInProgress.current = true
     setError(null)
     try {
       setIsPending(true)
@@ -41,8 +41,22 @@ function CartMismatchBanner(props: {
       )
       setActionText("Run transfer again")
     } finally {
+      transferInProgress.current = false
       setIsPending(false)
     }
+  }, [router])
+
+  useEffect(() => {
+    if (!customer || cart.customer_id || attemptedTransfer.current) {
+      return
+    }
+
+    attemptedTransfer.current = true
+    void handleSubmit()
+  }, [cart.customer_id, customer, handleSubmit])
+
+  if (!customer || !!cart.customer_id) {
+    return
   }
 
   return (
@@ -50,7 +64,11 @@ function CartMismatchBanner(props: {
       <div className="flex flex-col small:flex-row small:gap-2 gap-1 items-center">
         <span className="flex items-center gap-1">
           <ExclamationCircleSolid className="inline" />
-          Something went wrong when we tried to transfer your cart
+          {isPending
+            ? "Transferring your cart..."
+            : error
+              ? "Something went wrong when we tried to transfer your cart"
+              : "Your cart needs to be transferred"}
         </span>
 
         <span>·</span>

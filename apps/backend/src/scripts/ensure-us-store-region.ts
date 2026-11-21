@@ -142,17 +142,38 @@ export default async function ensureUsStoreRegion({ container }: ExecArgs) {
     await createShippingOptionsWorkflow(container).run({
       input: [
         {
-          name: "Standard US Shipping",
+          name: "PAC",
           price_type: "flat",
           provider_id: "manual_manual",
           service_zone_id: fulfillmentSet.service_zones[0].id,
           shipping_profile_id: shippingProfile.id,
           type: {
-            label: "Standard",
-            description: "Standard delivery within the United States.",
-            code: "standard",
+            label: "PAC",
+            description: "Entrega pelo PAC.",
+            code: "pac",
           },
-          prices: [{ currency_code: "usd", amount: 10 }],
+          prices: [{ currency_code: "usd", amount: 0 }],
+          rules: [
+            {
+              attribute: "enabled_in_store",
+              value: "true",
+              operator: "eq",
+            },
+            { attribute: "is_return", value: "false", operator: "eq" },
+          ],
+        },
+        {
+          name: "SEDEX",
+          price_type: "flat",
+          provider_id: "manual_manual",
+          service_zone_id: fulfillmentSet.service_zones[0].id,
+          shipping_profile_id: shippingProfile.id,
+          type: {
+            label: "SEDEX",
+            description: "Entrega por SEDEX.",
+            code: "sedex",
+          },
+          prices: [{ currency_code: "usd", amount: 0 }],
           rules: [
             {
               attribute: "enabled_in_store",

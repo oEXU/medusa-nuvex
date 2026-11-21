@@ -193,7 +193,7 @@ const ShippingAddress = ({
       <section>
         <div className="mb-5">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-fuchsia-700">
-            {isEnglish ? "Delivery address" : "Endereço de entrega"}
+            {isEnglish ? "Customer data" : "Dados do Cliente"}
           </p>
           <p className="mt-1 text-sm text-slate-500">
             {isEnglish

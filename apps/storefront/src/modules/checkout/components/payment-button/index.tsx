@@ -31,8 +31,18 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
         (cart.shipping_methods?.length ?? 0) < 1))
 
   const paymentSession = cart.payment_collection?.payment_sessions?.[0]
+  const paidByGiftcard = !!(
+    (cart as unknown as Record<string, unknown>)?.gift_cards &&
+    ((cart as unknown as Record<string, unknown>)?.gift_cards as unknown[])
+      ?.length > 0 &&
+    cart?.total === 0
+  )
 
   switch (true) {
+    case paidByGiftcard:
+      return (
+        <ManualTestPaymentButton notReady={notReady} data-testid={dataTestId} />
+      )
     case isStripeLike(paymentSession?.provider_id):
       return (
         <StripePaymentButton
@@ -169,7 +179,7 @@ const StripePaymentButton = ({
         isLoading={submitting}
         data-testid={dataTestId}
       >
-        Place order
+        {countryCode === "us" ? "Place order" : "Finalizar pedido"}
       </Button>
       <ErrorMessage
         error={errorMessage}
@@ -209,7 +219,7 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
         size="large"
         data-testid="submit-order-button"
       >
-        Place order
+        {countryCode === "us" ? "Place order" : "Finalizar pedido"}
       </Button>
       <ErrorMessage
         error={errorMessage}

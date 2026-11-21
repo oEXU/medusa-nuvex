@@ -12,6 +12,7 @@
     "build": "next build",
     "start": "next start -p 8000",
     "lint": "eslint .",
+    "test": "node --experimental-strip-types --test src/modules/products/components/product-rating-summary/rating.test.mjs src/lib/util/cart-media.test.mjs src/lib/util/image-url.test.mjs",
     "analyze": "ANALYZE=true next build"
   },
   "dependencies": {

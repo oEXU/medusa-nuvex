@@ -1,4 +1,4 @@
-import { listProducts } from "@lib/data/products"
+import { listGames } from "@lib/data/games"
 import { getRegion } from "@lib/data/regions"
 import { HttpTypes } from "@medusajs/types"
 import Product from "../product-preview"
@@ -7,6 +7,8 @@ type RelatedProductsProps = {
   product: HttpTypes.StoreProduct
   countryCode: string
 }
+
+const RELATED_PRODUCTS_LIMIT = 8
 
 export default async function RelatedProducts({
   product,
@@ -18,29 +20,14 @@ export default async function RelatedProducts({
     return null
   }
 
-  // edit this function to define your related products logic
-  const queryParams: HttpTypes.StoreProductListParams = {}
-  if (region?.id) {
-    queryParams.region_id = region.id
-  }
-  if (product.collection_id) {
-    queryParams.collection_id = [product.collection_id]
-  }
-  if (product.tags) {
-    queryParams.tag_id = product.tags
-      .map((t) => t.id)
-      .filter(Boolean) as string[]
-  }
-  queryParams.is_giftcard = false
-
-  const products = await listProducts({
-    queryParams,
-    countryCode,
-  }).then(({ response }) => {
-    return response.products.filter(
-      (responseProduct) => responseProduct.id !== product.id
-    )
-  })
+  // Related products are the other games from the store's catalog.
+  const products = (
+    await listGames({
+      region,
+      excludeIds: [product.id],
+      excludeHandles: product.handle ? [product.handle] : [],
+    })
+  ).slice(0, RELATED_PRODUCTS_LIMIT)
 
   if (!products.length) {
     return null

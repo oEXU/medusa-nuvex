@@ -4,6 +4,7 @@ import { setCartDeliveryMode, setShippingMethod } from "@lib/data/cart"
 import { calculatePriceForShippingOption } from "@lib/data/fulfillment"
 import {
   canSelectCartMediaType,
+  hasCartMediaChoice,
   isDigitalOnlyCart,
   type CartMediaType,
 } from "@lib/util/cart-media"
@@ -82,6 +83,7 @@ const Shipping: React.FC<ShippingProps> = ({
   const isEnglish = countryCode === "us"
 
   const digitalOnly = isDigitalOnlyCart(cart)
+  const hasMediaChoice = hasCartMediaChoice(cart)
   const selectedMediaType: CartMediaType = digitalOnly ? "digital" : "physical"
   const canSelectPhysical = canSelectCartMediaType(cart, "physical")
   const canSelectDigital = canSelectCartMediaType(cart, "digital")
@@ -271,79 +273,81 @@ const Shipping: React.FC<ShippingProps> = ({
       </div>
       {isOpen ? (
         <>
-          <div className="space-y-3" data-testid="delivery-mode-options">
-            <p className="text-sm font-semibold text-slate-800">
-              {isEnglish ? "Media type" : "Tipo de mídia"}
-            </p>
-            <RadioGroup
-              value={selectedMediaType}
-              onChange={handleSetDeliveryMode}
-            >
-              <Radio
-                value="physical"
-                disabled={isLoading || !canSelectPhysical}
-                className={clx(
-                  "flex cursor-pointer items-start gap-4 rounded-2xl border px-4 py-4 text-left transition hover:border-fuchsia-300 hover:bg-slate-50",
-                  {
-                    "border-fuchsia-600 bg-fuchsia-50":
-                      selectedMediaType === "physical",
-                    "cursor-not-allowed opacity-50":
-                      isLoading || !canSelectPhysical,
-                  }
-                )}
-                data-testid="physical-media-option"
-              >
-                <MedusaRadio checked={selectedMediaType === "physical"} />
-                <span className="flex flex-col">
-                  <span className="text-sm font-semibold text-slate-800">
-                    {isEnglish ? "PHYSICAL MEDIA" : "MÍDIA FÍSICA"}
-                  </span>
-                  <span className="mt-1 text-sm text-slate-500">
-                    {isEnglish
-                      ? "Delivered to the address selected for this order."
-                      : "Entregue no endereço escolhido para o pedido."}
-                  </span>
-                </span>
-              </Radio>
-              <Radio
-                value="digital"
-                disabled={isLoading || !canSelectDigital}
-                className={clx(
-                  "mt-3 flex cursor-pointer items-start gap-4 rounded-2xl border px-4 py-4 text-left transition hover:border-fuchsia-300 hover:bg-slate-50",
-                  {
-                    "border-fuchsia-600 bg-fuchsia-50":
-                      selectedMediaType === "digital",
-                    "cursor-not-allowed opacity-50":
-                      isLoading || !canSelectDigital,
-                  }
-                )}
-                data-testid="digital-media-option"
-              >
-                <MedusaRadio checked={selectedMediaType === "digital"} />
-                <span className="flex flex-col">
-                  <span className="text-sm font-semibold text-slate-800">
-                    {isEnglish ? "DIGITAL MEDIA" : "MÍDIA DIGITAL"}
-                  </span>
-                  <span className="mt-1 text-sm text-slate-500">
-                    {isEnglish
-                      ? "Use the email below for the digital order."
-                      : "Use o e-mail abaixo como destinatário do pedido digital."}
-                  </span>
-                </span>
-              </Radio>
-            </RadioGroup>
-            {!canSelectDigital && (
-              <p className="text-sm text-slate-500">
-                {isEnglish
-                  ? "Digital media is available only for products enabled for both formats."
-                  : "A mídia digital só fica disponível para produtos habilitados para os dois formatos."}
+          {hasMediaChoice && (
+            <div className="space-y-3" data-testid="delivery-mode-options">
+              <p className="text-sm font-semibold text-slate-800">
+                {isEnglish ? "Media type" : "Tipo de mídia"}
               </p>
-            )}
-            <ErrorMessage
-              error={error}
-              data-testid="delivery-option-error-message"
-            />
-          </div>
+              <RadioGroup
+                value={selectedMediaType}
+                onChange={handleSetDeliveryMode}
+              >
+                <Radio
+                  value="physical"
+                  disabled={isLoading || !canSelectPhysical}
+                  className={clx(
+                    "flex cursor-pointer items-start gap-4 rounded-2xl border px-4 py-4 text-left transition hover:border-fuchsia-300 hover:bg-slate-50",
+                    {
+                      "border-fuchsia-600 bg-fuchsia-50":
+                        selectedMediaType === "physical",
+                      "cursor-not-allowed opacity-50":
+                        isLoading || !canSelectPhysical,
+                    }
+                  )}
+                  data-testid="physical-media-option"
+                >
+                  <MedusaRadio checked={selectedMediaType === "physical"} />
+                  <span className="flex flex-col">
+                    <span className="text-sm font-semibold text-slate-800">
+                      {isEnglish ? "PHYSICAL MEDIA" : "MÍDIA FÍSICA"}
+                    </span>
+                    <span className="mt-1 text-sm text-slate-500">
+                      {isEnglish
+                        ? "Delivered to the address selected for this order."
+                        : "Entregue no endereço escolhido para o pedido."}
+                    </span>
+                  </span>
+                </Radio>
+                <Radio
+                  value="digital"
+                  disabled={isLoading || !canSelectDigital}
+                  className={clx(
+                    "mt-3 flex cursor-pointer items-start gap-4 rounded-2xl border px-4 py-4 text-left transition hover:border-fuchsia-300 hover:bg-slate-50",
+                    {
+                      "border-fuchsia-600 bg-fuchsia-50":
+                        selectedMediaType === "digital",
+                      "cursor-not-allowed opacity-50":
+                        isLoading || !canSelectDigital,
+                    }
+                  )}
+                  data-testid="digital-media-option"
+                >
+                  <MedusaRadio checked={selectedMediaType === "digital"} />
+                  <span className="flex flex-col">
+                    <span className="text-sm font-semibold text-slate-800">
+                      {isEnglish ? "DIGITAL MEDIA" : "MÍDIA DIGITAL"}
+                    </span>
+                    <span className="mt-1 text-sm text-slate-500">
+                      {isEnglish
+                        ? "Use the email below for the digital order."
+                        : "Use o e-mail abaixo como destinatário do pedido digital."}
+                    </span>
+                  </span>
+                </Radio>
+              </RadioGroup>
+              {!canSelectDigital && (
+                <p className="text-sm text-slate-500">
+                  {isEnglish
+                    ? "Digital media is available only for products enabled for both formats."
+                    : "A mídia digital só fica disponível para produtos habilitados para os dois formatos."}
+                </p>
+              )}
+              <ErrorMessage
+                error={error}
+                data-testid="delivery-option-error-message"
+              />
+            </div>
+          )}
 
           {digitalOnly ? (
             <DigitalContact cart={cart} />
@@ -438,7 +442,7 @@ const Shipping: React.FC<ShippingProps> = ({
                             <span className="justify-self-end text-ui-fg-base">
                               {option.price_type === "flat" ? (
                                 convertToLocale({
-                                  amount: option.amount!,
+                                  amount: option.amount ?? 0,
                                   currency_code: cart?.currency_code,
                                 })
                               ) : calculatedPricesMap[option.id] ? (
@@ -532,7 +536,7 @@ const Shipping: React.FC<ShippingProps> = ({
                               </div>
                               <span className="justify-self-end text-ui-fg-base">
                                 {convertToLocale({
-                                  amount: option.amount!,
+                                  amount: option.amount ?? 0,
                                   currency_code: cart?.currency_code,
                                 })}
                               </span>
@@ -583,7 +587,7 @@ const Shipping: React.FC<ShippingProps> = ({
                   <Text className="txt-medium text-ui-fg-subtle">
                     {cart.shipping_methods!.at(-1)!.name}{" "}
                     {convertToLocale({
-                      amount: cart.shipping_methods!.at(-1)!.amount!,
+                      amount: cart.shipping_methods!.at(-1)!.amount ?? 0,
                       currency_code: cart?.currency_code,
                     })}
                   </Text>
