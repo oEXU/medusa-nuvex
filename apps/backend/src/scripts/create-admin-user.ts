@@ -1,11 +1,11 @@
 /**
- * Local development convenience — ensures an admin user with the fixed
- * credentials below can log in to the dashboard at /app.
+ * Local development convenience — ensures an admin user can log in to the
+ * dashboard at /app using the configured ADMIN_PASSWORD.
  *
  *   npx medusa exec ./src/scripts/create-admin-user.ts
  *
  * Re-running it is safe: the user, auth identity, and password are reused
- * and the password is reset to the configured value each time.
+ * and the password is reset to ADMIN_PASSWORD each time.
  */
 import type { ExecArgs } from "@medusajs/framework/types"
 import {
@@ -15,11 +15,12 @@ import {
 } from "@medusajs/framework/utils"
 import { createUsersWorkflow } from "@medusajs/medusa/core-flows"
 
-const ADMIN_EMAIL = "admin@example.com"
-const ADMIN_PASSWORD = "admin123"
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@example.com"
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123"
 const PROVIDER = "emailpass"
 
 export default async function createAdminUser({ container }: ExecArgs) {
+
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
   const query = container.resolve(ContainerRegistrationKeys.QUERY)
   const authService = container.resolve(Modules.AUTH)

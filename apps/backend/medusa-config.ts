@@ -20,6 +20,7 @@ module.exports = defineConfig({
   },
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
+    redisUrl: process.env.ENABLE_REDIS === "true" ? process.env.REDIS_URL : undefined,
     http: {
       storeCors: process.env.STORE_CORS!,
       adminCors: process.env.ADMIN_CORS!,
@@ -38,5 +39,38 @@ module.exports = defineConfig({
     {
       resolve: "./src/modules/support-ticket",
     },
+    ...(process.env.REDIS_URL && process.env.ENABLE_REDIS === "true"
+      ? [
+          {
+            resolve: "@medusajs/medusa/event-bus-redis",
+            options: {
+              redisUrl: process.env.REDIS_URL,
+            },
+          },
+          {
+            resolve: "@medusajs/medusa/workflow-engine-redis",
+            options: {
+              redis: {
+                redisUrl: process.env.REDIS_URL,
+              },
+            },
+          },
+          {
+            resolve: "@medusajs/medusa/locking",
+            options: {
+              providers: [
+                {
+                  resolve: "@medusajs/medusa/locking-redis",
+                  id: "locking-redis",
+                  is_default: true,
+                  options: {
+                    redisUrl: process.env.REDIS_URL,
+                  },
+                },
+              ],
+            },
+          },
+        ]
+      : []),
   ],
 })

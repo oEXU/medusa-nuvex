@@ -45,7 +45,7 @@ export default async function cleanLowResProductImages({ container }: ExecArgs) 
     if (!p.images || p.images.length === 0) continue
 
     const imagesWithDim = p.images.map((img: any) => {
-      let dim = null
+      let dim: ReturnType<typeof getDimensions> = null
       if (img.url?.includes("/static/")) {
         const filename = decodeURIComponent(img.url.split("/static/")[1])
         dim = getDimensions(path.join(staticDir, filename))

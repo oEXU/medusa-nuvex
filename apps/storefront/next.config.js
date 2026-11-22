@@ -1,4 +1,5 @@
 const checkEnvVariables = require("./check-env-variables")
+const path = require("node:path")
 
 checkEnvVariables()
 
@@ -16,6 +17,9 @@ const MEDUSA_BACKEND_URL = (
  */
 const nextConfig = {
   reactStrictMode: true,
+  turbopack: {
+    root: path.resolve(__dirname, "../.."),
+  },
   async headers() {
     return [
       {

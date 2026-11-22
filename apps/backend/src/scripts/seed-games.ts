@@ -456,12 +456,22 @@ export default async function seedGames({ container }: ExecArgs) {
   const featuredService = container.resolve<FeaturedProductModuleService>(
     FEATURED_PRODUCT_MODULE
   )
-  const removedProductHandle = "grand-theft-auto-vi-standard-edition"
-  const { data: removedProducts } = await query.graph({
+  const removedProductHandles = new Set([
+    "grand-theft-auto-vi-standard-edition",
+    "sweatshirt",
+    "sweatpants",
+    "shorts",
+    "t-shirt",
+  ])
+  const { data: allProducts } = await query.graph({
     entity: "product",
-    fields: ["id"],
-    filters: { handle: removedProductHandle },
+    fields: ["id", "handle"],
   })
+  const removedProducts = allProducts.filter(
+    (product) =>
+      typeof product.handle === "string" &&
+      removedProductHandles.has(product.handle)
+  )
 
   if (removedProducts.length) {
     const removedProductIds = removedProducts
@@ -481,7 +491,7 @@ export default async function seedGames({ container }: ExecArgs) {
     await deleteProductsWorkflow(container).run({
       input: { ids: removedProductIds },
     })
-    logger.info(`Deleted product "${removedProductHandle}".`)
+    logger.info(`Deleted ${removedProductIds.length} non-game starter product(s).`)
   }
 
   const [existingPlacements] = await featuredService.listAndCountFeaturedProducts(
