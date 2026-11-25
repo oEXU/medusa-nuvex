@@ -33,6 +33,9 @@ const ShippingAddress = ({
     "shipping_address.country_code":
       cart?.shipping_address?.country_code || countryCode || "",
     "shipping_address.province": cart?.shipping_address?.province || "",
+    neighborhood: typeof cart?.shipping_address?.metadata?.neighborhood === "string"
+      ? cart.shipping_address.metadata.neighborhood
+      : "",
     "shipping_address.phone": cart?.shipping_address?.phone || "",
     cpf: typeof cart?.metadata?.cpf === "string" ? cart.metadata.cpf : "",
     email: cart?.email || "",
@@ -68,6 +71,9 @@ const ShippingAddress = ({
         "shipping_address.city": address.city || "",
         "shipping_address.country_code": address.country_code || "",
         "shipping_address.province": address.province || "",
+        neighborhood: typeof address.metadata?.neighborhood === "string"
+          ? address.metadata.neighborhood
+          : "",
         "shipping_address.phone": address.phone || "",
       }))
     }
@@ -255,6 +261,16 @@ const ShippingAddress = ({
             onChange={handleChange}
             required={countryCode === "br"}
             data-testid="shipping-address-line2-input"
+          />
+          <CheckoutField
+            label={isEnglish ? "Neighborhood" : "Bairro"}
+            name="neighborhood"
+            autoComplete="address-level3"
+            placeholder={isEnglish ? "Neighborhood" : "Seu bairro"}
+            value={formData.neighborhood}
+            onChange={handleChange}
+            required={!!cart?.items?.some((item) => item.requires_shipping !== false && item.metadata?.media_type !== "digital")}
+            data-testid="shipping-neighborhood-input"
           />
           <CheckoutField
             label={translate(countryCode, "city")}

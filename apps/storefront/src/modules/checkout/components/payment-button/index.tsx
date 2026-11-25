@@ -1,7 +1,8 @@
 "use client"
 
-import { isAdyen, isManual, isStripeLike } from "@lib/constants"
+import { isAdyen, isBlackcat, isManual, isStripeLike } from "@lib/constants"
 import { placeOrder } from "@lib/data/cart"
+import { getBlackcatCheckoutUrl } from "@lib/util/blackcat-checkout"
 import { HttpTypes } from "@medusajs/types"
 import { isDigitalOnlyCart } from "@lib/util/cart-media"
 import { Button } from "@modules/common/components/ui"
@@ -60,12 +61,84 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
         />
       )
     case isManual(paymentSession?.provider_id):
+    case isBlackcat(paymentSession?.provider_id):
+      if (isBlackcat(paymentSession?.provider_id)) {
+        return (
+          <BlackcatPaymentButton
+            notReady={notReady}
+            cart={cart}
+            session={paymentSession}
+            data-testid={dataTestId}
+          />
+        )
+      }
       return (
         <ManualTestPaymentButton notReady={notReady} data-testid={dataTestId} />
       )
     default:
       return <Button disabled>Select a payment method</Button>
   }
+}
+
+const BlackcatPaymentButton = ({
+  cart,
+  session,
+  notReady,
+  "data-testid": dataTestId,
+}: {
+  cart: HttpTypes.StoreCart
+  session: { id: string; data?: Record<string, unknown> }
+  notReady: boolean
+  "data-testid"?: string
+}) => {
+  const [submitting, setSubmitting] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const { countryCode } = useParams<{ countryCode: string }>()
+  const data = session.data ?? {}
+  const checkoutUrl = getBlackcatCheckoutUrl(data.invoiceUrl)
+
+  const handlePayment = async () => {
+    if (!checkoutUrl) {
+      setErrorMessage("Não foi possível recuperar o link oficial de checkout da BlackCat.")
+      return
+    }
+
+    setSubmitting(true)
+    setErrorMessage(null)
+    try {
+      await placeOrder(cart.id, countryCode, checkoutUrl)
+    } catch (error) {
+      // Next.js implements redirect() by throwing a control-flow signal. Let
+      // that signal reach Next instead of turning a successful order into an
+      // apparent payment failure.
+      if (
+        error !== null &&
+        typeof error === "object" &&
+        "digest" in error &&
+        typeof error.digest === "string" &&
+        error.digest.startsWith("NEXT_REDIRECT")
+      ) {
+        throw error
+      }
+      setErrorMessage("Não foi possível finalizar o pedido. Tente novamente.")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <div>
+      <Button
+        disabled={notReady || submitting}
+        isLoading={submitting}
+        onClick={handlePayment}
+        data-testid={dataTestId}
+      >
+        Continuar para o Pix
+      </Button>
+      <ErrorMessage error={errorMessage} />
+    </div>
+  )
 }
 
 const StripePaymentButton = ({

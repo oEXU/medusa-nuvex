@@ -1,7 +1,9 @@
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import ChevronDown from "@modules/common/icons/chevron-down"
 import TrustSeals from "@modules/checkout/components/trust-seals"
+import BlackcatOriginScript from "@modules/checkout/components/blackcat-origin-script"
 import { translate } from "@lib/util/store-locale"
+import { getBlackcatOriginScriptUrl } from "@lib/data/payment"
 import Image from "next/image"
 
 export default async function CheckoutLayout({
@@ -12,8 +14,12 @@ export default async function CheckoutLayout({
   params: Promise<{ countryCode: string }>
 }) {
   const { countryCode } = await params
+  const blackcatOriginScriptUrl = await getBlackcatOriginScriptUrl().catch(
+    () => undefined
+  )
   return (
     <div className="relative min-h-screen w-full bg-slate-50">
+      <BlackcatOriginScript src={blackcatOriginScriptUrl} />
       <div className="h-16 border-b border-slate-200 bg-white">
         <nav className="flex h-full items-center content-container justify-between">
           <LocalizedClientLink

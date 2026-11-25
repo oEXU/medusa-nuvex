@@ -115,7 +115,12 @@ export default async function initial_data_seed({
           name: "Brazil",
           currency_code: "brl",
           countries: ["br"],
-          payment_providers: ["pp_system_default"],
+          payment_providers: [
+            "pp_system_default",
+            ...(process.env.BLACKCAT_API_KEY
+              ? ["pp_blackcat_blackcat"]
+              : []),
+          ],
           metadata: DEFAULT_REGION_STORE_POLICIES,
         },
         {

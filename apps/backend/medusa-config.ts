@@ -30,6 +30,25 @@ module.exports = defineConfig({
     }
   },
   modules: [
+    ...(process.env.BLACKCAT_API_KEY
+      ? [
+          {
+            resolve: "@medusajs/medusa/payment",
+            options: {
+              providers: [
+                {
+                  resolve: "./src/modules/blackcat-payment",
+                  id: "blackcat",
+                  options: {
+                    apiKey: process.env.BLACKCAT_API_KEY,
+                    postbackUrl: process.env.BLACKCAT_WEBHOOK_URL,
+                  },
+                },
+              ],
+            },
+          },
+        ]
+      : []),
     {
       resolve: "./src/modules/featured-product",
     },
@@ -38,6 +57,9 @@ module.exports = defineConfig({
     },
     {
       resolve: "./src/modules/support-ticket",
+    },
+    {
+      resolve: "./src/modules/blackcat-webhook-event",
     },
     ...(process.env.REDIS_URL && process.env.ENABLE_REDIS === "true"
       ? [

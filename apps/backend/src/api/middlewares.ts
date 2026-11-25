@@ -25,5 +25,10 @@ export default defineMiddlewares({
       matcher: "/store/carts/:id/delivery-mode",
       middlewares: [validateAndTransformBody(StoreCartDeliveryModeSchema)],
     },
+    {
+      methods: ["POST"],
+      matcher: "/webhooks/blackcat",
+      bodyParser: { preserveRawBody: true },
+    },
   ],
 });

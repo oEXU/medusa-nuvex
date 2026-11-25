@@ -33,3 +33,14 @@ export const listCartPaymentMethods = async (regionId: string) => {
       return null
     })
 }
+
+export const getBlackcatOriginScriptUrl = async () => {
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+  const response = await sdk.client.fetch<{ script_url: string }>(
+    "/store/blackcat/origin-config",
+    { method: "GET", headers }
+  )
+  return response.script_url
+}

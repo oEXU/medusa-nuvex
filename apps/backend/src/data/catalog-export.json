@@ -1,5 +1,5 @@
 {
-  "exportedAt": "2026-11-22T04:36:04.553Z",
+  "exportedAt": "2026-11-25T00:41:41.466Z",
   "totalProducts": 54,
   "totalCategories": 5,
   "categories": [
@@ -81,8 +81,7 @@
       "metadata": {
         "categoryKeys": [
           "categoria-ps5",
-          "categoria-xbox",
-          "categoria-pc-perifericos"
+          "categoria-xbox"
         ]
       },
       "type": null,
@@ -171,8 +170,7 @@
       "metadata": {
         "categoryKeys": [
           "categoria-ps5",
-          "categoria-xbox",
-          "categoria-pc-perifericos"
+          "categoria-xbox"
         ],
         "listingBadge": "MAIS VENDIDO"
       },
@@ -616,7 +614,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-xbox"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -716,7 +718,12 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-switch",
+          "categoria-geek"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -844,7 +851,12 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-switch",
+          "categoria-geek"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -956,7 +968,12 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-xbox",
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -1056,7 +1073,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-ps5"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -1144,7 +1165,12 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-ps5",
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -1232,7 +1258,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-xbox"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -1320,7 +1350,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-xbox"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -1420,7 +1454,12 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-ps5",
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -1524,7 +1563,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-ps5"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -1628,7 +1671,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-ps5"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -1732,7 +1779,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-xbox"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -1832,7 +1883,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-xbox"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -1924,7 +1979,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-ps5"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -2028,7 +2087,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-geek"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -2112,7 +2175,12 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-ps5",
+          "categoria-geek"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -2216,7 +2284,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -2320,7 +2392,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -2420,7 +2496,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -2544,7 +2624,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -2652,7 +2736,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -2752,7 +2840,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -2852,7 +2944,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -2952,7 +3048,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -3052,7 +3152,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -3152,7 +3256,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -3256,7 +3364,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -3360,7 +3472,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -3464,7 +3580,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -3572,7 +3692,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -3676,7 +3800,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -3800,7 +3928,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -3904,7 +4036,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -4004,7 +4140,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -4104,7 +4244,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -4192,7 +4336,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -4276,7 +4424,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -4376,7 +4528,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -4464,7 +4620,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -4552,7 +4712,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -4640,7 +4804,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -4724,7 +4892,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -4816,7 +4988,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -4908,7 +5084,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -5000,7 +5180,11 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -5092,7 +5276,13 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-xbox",
+          "categoria-pc-perifericos",
+          "categoria-geek"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -5200,7 +5390,13 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-xbox",
+          "categoria-pc-perifericos",
+          "categoria-geek"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -5316,7 +5512,12 @@
       "hs_code": null,
       "mid_code": null,
       "material": null,
-      "metadata": null,
+      "metadata": {
+        "categoryKeys": [
+          "categoria-pc-perifericos",
+          "categoria-geek"
+        ]
+      },
       "type": null,
       "collection": null,
       "tags": [],
@@ -7314,6 +7515,97 @@
       "category_key": "categoria-xbox",
       "product_id": "prod_01M7QM84B02FF2SHH0SH7AEXRE",
       "sort_order": 13,
+      "is_active": true
+    },
+    {
+      "id": "01M80XN5E10B20XBEG766WEBTK",
+      "category_key": "categoria-switch",
+      "product_id": "prod_01M7QK1AWPKW58NYGPAFBCT20K",
+      "sort_order": 0,
+      "is_active": true
+    },
+    {
+      "id": "01M80XN5E26HEWJXH09MS7P0R9",
+      "category_key": "categoria-pc-perifericos",
+      "product_id": "prod_01M7YDEPRQZD6W13E92JSFA8H2",
+      "sort_order": 37,
+      "is_active": true
+    },
+    {
+      "id": "01M80XN5E28MRG14HS2GGHEXAP",
+      "category_key": "categoria-geek",
+      "product_id": "prod_01M7QKWKF6GS0QSY9TGH3235CJ",
+      "sort_order": 2,
+      "is_active": true
+    },
+    {
+      "id": "01M80XN5E2BGJCFRFDBCWHZPAN",
+      "category_key": "categoria-geek",
+      "product_id": "prod_01M7QM84B02FF2SHH0SH7AEXRE",
+      "sort_order": 5,
+      "is_active": true
+    },
+    {
+      "id": "01M80XN5E2BW9H3YEPJSWAEEE7",
+      "category_key": "categoria-geek",
+      "product_id": "prod_01M7QK1AWPKW58NYGPAFBCT20K",
+      "sort_order": 0,
+      "is_active": true
+    },
+    {
+      "id": "01M80XN5E2D3RNRRW0HAQFQRV3",
+      "category_key": "categoria-geek",
+      "product_id": "prod_01M7YDEPRQZD6W13E92JSFA8H2",
+      "sort_order": 6,
+      "is_active": true
+    },
+    {
+      "id": "01M80XN5E2DTWYXVSMAQ5WMP2Y",
+      "category_key": "categoria-switch",
+      "product_id": "prod_01M7QK51ZG8XDEMPXZ3BCK9QGS",
+      "sort_order": 1,
+      "is_active": true
+    },
+    {
+      "id": "01M80XN5E2HV5NH7CRE5RX55PF",
+      "category_key": "categoria-ps5",
+      "product_id": "prod_01M7QKRG1KB8HHMD5V08SJX7KA",
+      "sort_order": 71,
+      "is_active": true
+    },
+    {
+      "id": "01M80XN5E2MJNK78ZBHKB9XSJD",
+      "category_key": "categoria-geek",
+      "product_id": "prod_01M7QM7V7KGHDNQNRVYSDW8SNC",
+      "sort_order": 4,
+      "is_active": true
+    },
+    {
+      "id": "01M80XN5E2N57X5H70XT3MXZB5",
+      "category_key": "categoria-pc-perifericos",
+      "product_id": "prod_01M7QKRSACP3HKSK2QMMSAQMB8",
+      "sort_order": 36,
+      "is_active": true
+    },
+    {
+      "id": "01M80XN5E2Q10JBN6NS1NPER9R",
+      "category_key": "categoria-geek",
+      "product_id": "prod_01M7QKWWQGVNR1A6XW19G0BAPY",
+      "sort_order": 3,
+      "is_active": true
+    },
+    {
+      "id": "01M80XN5E2RQT9H57V6AM36MN9",
+      "category_key": "categoria-pc-perifericos",
+      "product_id": "prod_01M7QKNEQ2GKXQ67AGMZ8CFPTV",
+      "sort_order": 35,
+      "is_active": true
+    },
+    {
+      "id": "01M80XN5E2X6SPVSESBYYQ8RKA",
+      "category_key": "categoria-geek",
+      "product_id": "prod_01M7QK51ZG8XDEMPXZ3BCK9QGS",
+      "sort_order": 1,
       "is_active": true
     }
   ],

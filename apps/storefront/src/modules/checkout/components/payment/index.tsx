@@ -1,7 +1,9 @@
 "use client"
 import { RadioGroup } from "@headlessui/react"
-import { getPaymentInfo, isStripeLike } from "@lib/constants"
-import { initiatePaymentSession } from "@lib/data/cart"
+import { getPaymentInfo, isBlackcat, isStripeLike } from "@lib/constants"
+import { initiatePaymentSession, placeOrder } from "@lib/data/cart"
+import { getBlackcatCheckoutUrl } from "@lib/util/blackcat-checkout"
+import { getBlackcatOriginToken } from "@lib/util/blackcat-origin"
 import { CheckCircleSolid, CreditCard } from "@medusajs/icons"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import PaymentContainer, {
@@ -18,7 +20,6 @@ import {
 } from "@modules/common/components/ui"
 import { HttpTypes } from "@medusajs/types"
 import { isDigitalOnlyCart } from "@lib/util/cart-media"
-import Image from "next/image"
 import {
   useParams,
   usePathname,
@@ -50,34 +51,6 @@ const PixIcon = () => (
   </svg>
 )
 
-const MercadoPagoIcon = () => (
-  <Image
-    src="/mercado-pago.png"
-    alt="Mercado Pago"
-    width={20}
-    height={20}
-    className="h-5 w-5 shrink-0 object-contain"
-  />
-)
-
-const BitcoinIcon = () => (
-  <svg aria-hidden="true" viewBox="0 0 32 32" className="h-5 w-5 shrink-0">
-    <circle cx="16" cy="16" r="16" fill="#f7931a" />
-    <text
-      x="16"
-      y="22"
-      fill="white"
-      fontFamily="Arial, sans-serif"
-      fontSize="21"
-      fontWeight="900"
-      textAnchor="middle"
-      transform="rotate(12 16 16)"
-    >
-      ₿
-    </text>
-  </svg>
-)
-
 const Payment = ({
   cart,
   availablePaymentMethods,
@@ -86,7 +59,9 @@ const Payment = ({
   availablePaymentMethods: { id: string }[]
 }) => {
   const activeSession = cart.payment_collection?.payment_sessions?.find(
-    (paymentSession) => paymentSession.status === "pending"
+    (paymentSession) =>
+      paymentSession.status === "pending" ||
+      paymentSession.status === "pending_authorization"
   )
 
   const [isLoading, setIsLoading] = useState(false)
@@ -108,6 +83,15 @@ const Payment = ({
     currencyCode === "brl" || currencyCode === "usd"
   const configuredPaymentMethods = availablePaymentMethods.filter(
     ({ id }) => !id.startsWith("pp_system_default")
+  )
+  const blackcatPaymentMethod = configuredPaymentMethods.find(({ id }) =>
+    isBlackcat(id)
+  )
+  const cardPaymentMethod = configuredPaymentMethods.find(({ id }) =>
+    isStripeLike(id)
+  )
+  const cardPaymentMethods = configuredPaymentMethods.filter(({ id }) =>
+    isStripeLike(id)
   )
 
   const setPaymentMethod = async (method: string) => {
@@ -155,13 +139,81 @@ const Payment = ({
         activeSession?.provider_id === selectedPaymentMethod
 
       if (!checkActiveSession) {
-        await initiatePaymentSession(cart, {
+        let data: Record<string, unknown> | undefined
+        if (isBlackcat(selectedPaymentMethod)) {
+          const originToken = await getBlackcatOriginToken()
+          const address = cart.shipping_address ?? cart.billing_address
+          const customerName = [address?.first_name, address?.last_name]
+            .filter((part): part is string => typeof part === "string" && !!part.trim())
+            .join(" ")
+          const cpf = cart.metadata?.cpf
+          data = {
+            originToken,
+            items: (cart.items ?? []).map((item) => ({
+              title: item.product_title || item.title,
+              unitPrice: Math.round(Number(item.unit_price) * 100),
+              quantity: item.quantity,
+              tangible: item.requires_shipping !== false && item.metadata?.media_type !== "digital",
+            })),
+            shipping: cart.shipping_address ? {
+              name: customerName,
+              street: cart.shipping_address.address_1 ?? "",
+              number: cart.shipping_address.address_2 ?? cart.shipping_address.address_1?.match(/\b\d+[a-zA-Z]?\b/)?.[0] ?? "",
+              complement: cart.shipping_address.address_2 ?? "",
+              neighborhood: typeof cart.shipping_address.metadata?.neighborhood === "string"
+                ? cart.shipping_address.metadata.neighborhood
+                : cart.shipping_address.address_2 ?? "",
+              city: cart.shipping_address.city ?? "",
+              state: cart.shipping_address.province ?? "",
+              zipCode: cart.shipping_address.postal_code?.replace(/\D/g, "") ?? "",
+            } : undefined,
+            customer: {
+              name: customerName,
+              email: cart.email,
+              phone: address?.phone ?? "",
+              document: {
+                number: typeof cpf === "string" ? cpf : "",
+                type: "cpf",
+              },
+            },
+          }
+        }
+        const result = await initiatePaymentSession(cart, {
           provider_id: selectedPaymentMethod,
+          ...(data ? { data } : {}),
         })
+        if (isBlackcat(selectedPaymentMethod)) {
+          const session = result.payment_collection.payment_sessions?.find(
+            ({ provider_id }) => isBlackcat(provider_id)
+          )
+          const checkoutUrl = getBlackcatCheckoutUrl(session?.data?.invoiceUrl)
+          if (!session || !checkoutUrl) {
+            throw new Error("A BlackCat não retornou uma URL válida de checkout.")
+          }
+          await placeOrder(cart.id, countryCode, checkoutUrl)
+          return
+        }
+        router.refresh()
       }
       return
     } catch (err) {
-      setError(err instanceof Error ? err.message : String(err))
+      if (
+        err !== null &&
+        typeof err === "object" &&
+        "digest" in err &&
+        typeof err.digest === "string" &&
+        err.digest.startsWith("NEXT_REDIRECT")
+      ) {
+        throw err
+      }
+      if (isBlackcat(selectedPaymentMethod)) {
+        router.refresh()
+      }
+      setError(
+        isBlackcat(selectedPaymentMethod)
+          ? "Não foi possível iniciar o Pix agora. Confira seus dados e tente novamente."
+          : err instanceof Error ? err.message : String(err)
+      )
     } finally {
       setIsLoading(false)
     }
@@ -171,155 +223,27 @@ const Payment = ({
     setError(null)
   }, [isOpen])
 
-  const handleMercadoPagoRedirect = () => {
-    const productTitle =
-      cart.items && cart.items.length > 0
-        ? cart.items
-            .map((item) => item.product_title || item.title)
-            .filter(Boolean)
-            .join(", ")
-        : "Grand Theft Auto VI"
-
-    const rawTotal = cart.total ?? cart.subtotal ?? cart.item_subtotal ?? 0
-    const priceInCents = Math.round(rawTotal * 100)
-
-    const payload = {
-      productName: productTitle,
-      priceInCents: priceInCents > 0 ? priceInCents : 12990,
-      totalAmount: rawTotal > 0 ? rawTotal : 129.9,
-      cartId: cart.id,
-      items: cart.items?.map((item) => ({
-        id: item.id,
-        title: item.product_title || item.title,
-        quantity: item.quantity,
-        unit_price: item.unit_price,
-        total: item.total,
-      })),
-      generatedAt: new Date().toISOString(),
-    }
-
-    try {
-      sessionStorage.setItem("mp_checkout_data", JSON.stringify(payload))
-      localStorage.setItem("mp_checkout_data", JSON.stringify(payload))
-    } catch (_) {}
-
-    const params = new URLSearchParams()
-    params.set("productName", payload.productName)
-    params.set("priceInCents", String(payload.priceInCents))
-    if (cart.id) params.set("cartId", cart.id)
-
-    const baseUrl = process.env.NEXT_PUBLIC_MP_CHECKOUT_URL || "/mp-checkout/index.html"
-    const targetUrl = `${baseUrl}?${params.toString()}`
-    window.location.assign(new URL(targetUrl, window.location.origin).href)
-  }
-
-  if (isSupportedCheckoutCurrency && configuredPaymentMethods.length === 0) {
-    const methods =
-      currencyCode === "brl"
-        ? [
-            { label: "PIX", icon: <PixIcon /> },
-            {
-              label: "PIX Mercado Pago",
-              icon: <MercadoPagoIcon />,
-              isAction: true,
-              onClick: handleMercadoPagoRedirect,
-            },
-            {
-              label: "Cartão de crédito",
-              icon: <CreditCard className="h-5 w-5 shrink-0 text-slate-700" />,
-              isCreditCard: true,
-            },
-            { label: "Bitcoin", icon: <BitcoinIcon /> },
-          ]
-        : [
-            {
-              label: "Cartão de crédito (Stripe)",
-              icon: <CreditCard className="h-5 w-5 shrink-0 text-slate-700" />,
-              isCreditCard: true,
-            },
-            { label: "Bitcoin", icon: <BitcoinIcon /> },
-          ]
-
-    return (
-      <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
-        <div className="mb-6">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-fuchsia-700">
-            {countryCode === "us" ? "Checkout · step 3" : "Checkout · etapa 3"}
-          </p>
-          <Heading
-            level="h2"
-            className="text-2xl font-semibold tracking-tight text-slate-900"
-          >
-            {translate(countryCode, "payment")}
-          </Heading>
-        </div>
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
-          <p className="text-base-semi text-ui-fg-base">
-            {translate(countryCode, "paymentSetupPending")}
-          </p>
-          <p className="mt-1 text-small-regular text-ui-fg-subtle">
-            {translate(countryCode, "paymentUnavailable")}
-          </p>
-        </div>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          {methods.map((method) => {
-            if ("isAction" in method && method.isAction) {
-              return (
-                <button
-                  type="button"
-                  key={method.label}
-                  onClick={method.onClick}
-                  className="group flex w-full items-center justify-between rounded-2xl border border-sky-300 bg-sky-50/30 px-4 py-4 text-sm text-slate-800 shadow-xs transition-all hover:border-[#009ee3] hover:bg-sky-50/70 hover:shadow-md active:scale-[0.99] cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-[#009ee3]/40"
-                >
-                  <span className="flex items-center gap-2.5 font-medium text-slate-900">
-                    {method.icon}
-                    {method.label}
-                  </span>
-                  <span className="flex items-center gap-1 rounded-full bg-[#009ee3] px-3 py-1 text-xs font-semibold text-white shadow-xs transition-colors group-hover:bg-[#007cb4]">
-                    Pagar com Pix
-                    <span
-                      aria-hidden="true"
-                      className="transition-transform group-hover:translate-x-0.5"
-                    >
-                      →
-                    </span>
-                  </span>
-                </button>
-              )
-            }
-
-            return (
-              <div
-                key={method.label}
-                aria-disabled="true"
-                className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm text-slate-700"
-              >
-                <span className="flex items-center gap-2.5">
-                  {method.icon}
-                  {method.label}
-                </span>
-                <span
-                  className={
-                    "isCreditCard" in method && method.isCreditCard
-                      ? "rounded-full bg-red-100 px-2.5 py-1 text-xs text-red-800"
-                      : "rounded-full bg-amber-100 px-2.5 py-1 text-xs text-amber-800"
-                  }
-                >
-                  {translate(
-                    countryCode,
-                    "isCreditCard" in method && method.isCreditCard
-                      ? "paymentUnavailableStatus"
-                      : "paymentPending"
-                  )}
-                </span>
-              </div>
-            )
-          })}
-        </div>
-        <Divider className="mt-8" />
-      </section>
-    )
-  }
+  const methods =
+    currencyCode === "brl"
+      ? [
+          { label: "PIX", icon: <PixIcon /> },
+          {
+            label: "Cartão de crédito",
+            icon: <CreditCard className="h-5 w-5 shrink-0 text-slate-700" />,
+            isCreditCard: true,
+          },
+        ]
+      : [
+          {
+            label: "PIX",
+            icon: <PixIcon />,
+          },
+          {
+            label: "Cartão de crédito",
+            icon: <CreditCard className="h-5 w-5 shrink-0 text-slate-700" />,
+            isCreditCard: true,
+          },
+        ]
 
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
@@ -354,15 +278,97 @@ const Payment = ({
           </Text>
         )}
       </div>
+      {isSupportedCheckoutCurrency && (
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          {methods.map((method) => {
+            if (method.label === "PIX" && blackcatPaymentMethod) {
+              return (
+                <button
+                  type="button"
+                  key={method.label}
+                  onClick={() => setPaymentMethod(blackcatPaymentMethod.id)}
+                  aria-pressed={selectedPaymentMethod === blackcatPaymentMethod.id}
+                  className={clx(
+                    "flex w-full items-center gap-2.5 rounded-2xl border px-4 py-4 text-left text-sm text-slate-800 transition-all",
+                    selectedPaymentMethod === blackcatPaymentMethod.id
+                      ? "border-fuchsia-500 bg-fuchsia-50"
+                      : "border-slate-200 bg-white hover:border-fuchsia-300"
+                  )}
+                >
+                  {method.icon}
+                  <span className="font-medium text-slate-900">{method.label}</span>
+                </button>
+              )
+            }
+
+            if (
+              "isCreditCard" in method &&
+              method.isCreditCard &&
+              cardPaymentMethod
+            ) {
+              return (
+                <button
+                  type="button"
+                  key={method.label}
+                  onClick={() => setPaymentMethod(cardPaymentMethod.id)}
+                  aria-pressed={selectedPaymentMethod === cardPaymentMethod.id}
+                  className={clx(
+                    "flex w-full items-center gap-2.5 rounded-2xl border px-4 py-4 text-left text-sm text-slate-800 transition-all",
+                    selectedPaymentMethod === cardPaymentMethod.id
+                      ? "border-fuchsia-500 bg-fuchsia-50"
+                      : "border-slate-200 bg-white hover:border-fuchsia-300"
+                  )}
+                >
+                  {method.icon}
+                  <span className="font-medium text-slate-900">{method.label}</span>
+                </button>
+              )
+            }
+
+            return (
+              <div
+                key={method.label}
+                aria-disabled="true"
+                className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm text-slate-700"
+              >
+                <span className="flex items-center gap-2.5">
+                  {method.icon}
+                  {method.label}
+                </span>
+                <span
+                  className={
+                    "isCreditCard" in method && method.isCreditCard
+                      ? "rounded-full bg-red-100 px-2.5 py-1 text-xs text-red-800"
+                      : "rounded-full bg-amber-100 px-2.5 py-1 text-xs text-amber-800"
+                  }
+                >
+                  {translate(
+                    countryCode,
+                    "isCreditCard" in method && method.isCreditCard
+                      ? "paymentUnavailableStatus"
+                      : "paymentPending"
+                  )}
+                </span>
+              </div>
+            )
+          })}
+        </div>
+      )}
       <div>
         <div className={isOpen ? "block" : "hidden"}>
           {!paidByGiftcard && configuredPaymentMethods?.length && (
             <>
               <RadioGroup
-                value={selectedPaymentMethod}
+                value={
+                  cardPaymentMethods.some(
+                    ({ id }) => id === selectedPaymentMethod
+                  )
+                    ? selectedPaymentMethod
+                    : ""
+                }
                 onChange={(value: string) => setPaymentMethod(value)}
               >
-                {configuredPaymentMethods.map((paymentMethod) => (
+                {cardPaymentMethods.map((paymentMethod) => (
                   <div key={paymentMethod.id}>
                     {isStripeLike(paymentMethod.id) ? (
                       <StripePaymentContainer
@@ -395,6 +401,25 @@ const Payment = ({
                 {translate(countryCode, "giftCard")}
               </Text>
             </div>
+          )}
+
+          {isBlackcat(selectedPaymentMethod) && !activeSession && (
+            <fieldset className="mt-5 grid gap-3 sm:grid-cols-2">
+              <legend className="mb-2 text-sm font-medium text-slate-700">
+                Escolha como deseja pagar com Pix
+              </legend>
+              <div className="flex items-start gap-3 rounded-xl border border-fuchsia-300 bg-fuchsia-50 p-4">
+                <span
+                  aria-hidden="true"
+                  className="mt-0.5 h-4 w-4 shrink-0 rounded-full border-[5px] border-fuchsia-600 outline outline-1 outline-fuchsia-600"
+                />
+                <span>
+                  <strong>Checkout Seguro - NuveX</strong>
+                  <br />
+                  <small>Continue no ambiente seguro de pagamento.</small>
+                </span>
+              </div>
+            </fieldset>
           )}
 
           <ErrorMessage

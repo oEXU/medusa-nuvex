@@ -14,6 +14,7 @@ import {
 } from "./cookies"
 import { getRegion } from "./regions"
 import { getLocale, setLocaleCookie } from "./locale-actions"
+import { getBlackcatCheckoutUrl } from "@lib/util/blackcat-checkout"
 import {
   canSelectCartMediaType,
   isDigitalGtaViItem,
@@ -534,6 +535,7 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
     if (!cartId) {
       throw new Error("No existing cart found when setting addresses")
     }
+    const currentCart = await retrieveCart(cartId)
 
     const getValue = (name: string) => {
       const value = formData.get(name)
@@ -556,6 +558,13 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
 
     if (requiredFields.some((field) => !getValue(field))) {
       throw new Error("Preencha todos os campos obrigatórios.")
+    }
+
+    const containsPhysicalItems = currentCart?.items?.some(
+      (item) => item.requires_shipping !== false && item.metadata?.media_type !== "digital"
+    )
+    if (containsPhysicalItems && !getValue("neighborhood")) {
+      throw new Error("Informe o bairro para concluir o pagamento Pix.")
     }
 
     if (countryCode === "br" && !getValue("shipping_address.address_2")) {
@@ -581,6 +590,7 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
       country_code: countryCode,
       province: getValue("shipping_address.province"),
       phone: getValue("shipping_address.phone"),
+      metadata: { neighborhood: getValue("neighborhood") },
     }
 
     const data: HttpTypes.StoreUpdateCart = {
@@ -665,12 +675,20 @@ function isValidCpf(cpf: string) {
  */
 export async function placeOrder(
   cartId?: string,
-  fallbackCountryCode?: string
+  fallbackCountryCode?: string,
+  redirectUrl?: string
 ) {
   const id = cartId || (await getCartId())
 
   if (!id) {
     throw new Error("No existing cart found when placing an order")
+  }
+
+  const blackcatCheckoutUrl = redirectUrl
+    ? getBlackcatCheckoutUrl(redirectUrl)
+    : undefined
+  if (redirectUrl && !blackcatCheckoutUrl) {
+    throw new Error("O link de checkout da BlackCat está ausente ou inválido.")
   }
 
   const headers = {
@@ -697,7 +715,11 @@ export async function placeOrder(
     await revalidateCacheTag("orders")
 
     removeCartId()
-    redirect(`/${countryCode}/order/${cartRes?.order.id}/confirmed`)
+    redirect(blackcatCheckoutUrl ?? `/${countryCode}/order/${cartRes?.order.id}/confirmed`)
+  }
+
+  if (blackcatCheckoutUrl) {
+    throw new Error("Não foi possível criar o pedido para abrir o checkout da BlackCat.")
   }
 
   return cartRes.cart

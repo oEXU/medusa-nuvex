@@ -36,6 +36,14 @@ const nextConfig = {
     return {
       beforeFiles: [
         {
+          source: "/webhooks/blackcat",
+          destination: "http://127.0.0.1:9000/webhooks/blackcat",
+        },
+        {
+          source: "/:countryCode/webhooks/blackcat",
+          destination: "http://127.0.0.1:9000/webhooks/blackcat",
+        },
+        {
           source: "/:countryCode/products/:handle([^/.]+).md",
           destination: "/:countryCode/products/:handle/markdown",
         },

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 
-const ROTATION_INTERVAL = 1300
+const ROTATION_INTERVAL = 5000
 
 export default function AnnouncementBanner({
   label,
@@ -48,18 +48,18 @@ export default function AnnouncementBanner({
     >
       {messages.map((message, index) => {
         const isActive = index === activeIndex
-        const isNext = index === (activeIndex + 1) % messages.length
 
         return (
           <div
             key={index}
             aria-hidden={!isActive}
-            className="absolute inset-0 flex items-center justify-center gap-2 whitespace-nowrap px-2 will-change-transform small:gap-8 small:px-4"
+            className="absolute inset-0 flex items-center justify-center gap-2 whitespace-nowrap px-2 will-change-[opacity,transform] small:gap-6 small:px-4"
             style={{
-              transform: `translateX(${isActive ? 0 : isNext ? 100 : -100}%)`,
+              opacity: isActive ? 1 : 0,
+              transform: `translateY(${isActive ? 0 : 6}px)`,
               transition: prefersReducedMotion
                 ? "none"
-                : "transform 500ms cubic-bezier(0.16, 1, 0.3, 1)",
+                : "opacity 600ms ease, transform 600ms ease",
             }}
           >
             <span className="hidden rounded bg-pink-400 px-2 py-1 text-[9px] font-black text-[#21102f] small:inline-flex small:text-[10px]">

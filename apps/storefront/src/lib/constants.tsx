@@ -25,6 +25,10 @@ export const paymentInfoMap: Record<
     title: "PayPal",
     icon: <PayPal />,
   },
+  pp_blackcat_blackcat: {
+    title: "Pix",
+    icon: <CreditCard />,
+  },
   pp_system_default: {
     title: "Manual Payment",
     icon: <CreditCard />,
@@ -101,6 +105,10 @@ export const isPaypal = (providerId?: string) => {
 }
 export const isManual = (providerId?: string) => {
   return providerId?.startsWith("pp_system_default")
+}
+
+export const isBlackcat = (providerId?: string) => {
+  return providerId === "pp_blackcat_blackcat"
 }
 
 // Add currencies that don't need to be divided by 100

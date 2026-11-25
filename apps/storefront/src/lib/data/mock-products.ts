@@ -136,6 +136,19 @@ export const MOCK_PRODUCTS: MockProductSpec[] = [
 
 const mockId = (handle: string) => `mock-${handle}`
 
+const getDiscountPercent = (handle: string) => {
+  let hash = 0
+
+  for (const character of handle) {
+    hash = (hash * 31 + character.charCodeAt(0)) >>> 0
+  }
+
+  return 27 + (hash % 41)
+}
+
+const getDiscountedPrice = (amount: number, discountPercent: number) =>
+  Math.round((amount * (100 - discountPercent)) / 100)
+
 function buildMockProduct(
   spec: MockProductSpec,
   region?: HttpTypes.StoreRegion | null
@@ -144,9 +157,13 @@ function buildMockProduct(
     region?.currency_code?.toLowerCase() === "usd" ? "usd" : "brl"
   const currencyCode = priceKey.toUpperCase()
   // Specs store integer cents; Medusa exposes `calculated_amount` in major units.
-  const calculatedAmount = spec.price[priceKey] / 100
-  const originalAmount =
-    (spec.originalPrice?.[priceKey] ?? spec.price[priceKey]) / 100
+  const discountPercent = getDiscountPercent(spec.handle)
+  const originalPrice = spec.originalPrice?.[priceKey] ?? spec.price[priceKey]
+  const calculatedPrice = spec.originalPrice
+    ? getDiscountedPrice(originalPrice, discountPercent)
+    : getDiscountedPrice(spec.price[priceKey], discountPercent)
+  const calculatedAmount = calculatedPrice / 100
+  const originalAmount = originalPrice / 100
   const productId = mockId(spec.handle)
   const variantId = `${productId}-variant`
 

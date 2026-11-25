@@ -18,7 +18,6 @@ const bannerTypeLabels: Record<PromoBanner["type"], string> = {
 
 const PromoBannerCarousel = ({ banners }: { banners: PromoBanner[] }) => {
   const [activeIndex, setActiveIndex] = useState(0)
-  const [isPaused, setIsPaused] = useState(false)
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const touchStartRef = useRef<number | null>(null)
@@ -47,7 +46,7 @@ const PromoBannerCarousel = ({ banners }: { banners: PromoBanner[] }) => {
 
   // Rotação automática suave
   useEffect(() => {
-    if (banners.length < 2 || isPaused || prefersReducedMotion) {
+    if (banners.length < 2) {
       if (timerRef.current) clearInterval(timerRef.current)
       return
     }
@@ -59,7 +58,7 @@ const PromoBannerCarousel = ({ banners }: { banners: PromoBanner[] }) => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current)
     }
-  }, [banners.length, isPaused, prefersReducedMotion, nextSlide])
+  }, [banners.length, nextSlide])
 
   // Suporte a swipe de toque em celulares e tablets
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -92,23 +91,20 @@ const PromoBannerCarousel = ({ banners }: { banners: PromoBanner[] }) => {
     return null
   }
 
+  const orderedBanners = [...banners].sort((first, second) => {
+    const firstPriority =
+      first.title === "Grand Theft Auto VI - Já disponível" ? 0 : 1
+    const secondPriority =
+      second.title === "Grand Theft Auto VI - Já disponível" ? 0 : 1
+
+    return firstPriority - secondPriority || first.sort_order - second.sort_order
+  })
+
   return (
     <section
       aria-label="Destaques e Banners da NuveX"
       aria-roledescription="carrossel"
       className="relative px-4 py-8 sm:px-6 sm:py-12 small:px-8"
-      onPointerEnter={(event) => {
-        if (event.pointerType === "mouse") setIsPaused(true)
-      }}
-      onPointerLeave={(event) => {
-        if (event.pointerType === "mouse") setIsPaused(false)
-      }}
-      onFocusCapture={() => setIsPaused(true)}
-      onBlurCapture={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-          setIsPaused(false)
-        }
-      }}
     >
       <div className="relative mx-auto max-w-7xl">
         {/* Glow de ambiente holográfico atrás do carrossel */}
@@ -131,10 +127,10 @@ const PromoBannerCarousel = ({ banners }: { banners: PromoBanner[] }) => {
               transform: `translateX(-${activeIndex * 100}%)`,
               transition: prefersReducedMotion
                 ? "none"
-                : "transform 650ms cubic-bezier(0.16, 1, 0.3, 1)",
+                : "transform 2000ms cubic-bezier(0.16, 1, 0.3, 1)",
             }}
           >
-            {banners.map((banner, index) => {
+            {orderedBanners.map((banner, index) => {
               const isActive = index === activeIndex
               const isClickable = Boolean(banner.link_url)
               const preserveImageComposition =
@@ -272,7 +268,7 @@ const PromoBannerCarousel = ({ banners }: { banners: PromoBanner[] }) => {
 
               {/* Indicadores Dinâmicos de Slide (Pills com Progresso Neon) */}
               <div className="absolute bottom-3.5 left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-black/45 px-3 py-1.5 backdrop-blur-md sm:bottom-5">
-                {banners.map((banner, index) => {
+                {orderedBanners.map((banner, index) => {
                   const isCurrent = index === activeIndex
                   return (
                     <button

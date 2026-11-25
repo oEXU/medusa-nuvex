@@ -12,34 +12,27 @@ export default async function PreviewPrice({ price }: { price: VariantPrice }) {
     price.original_price_number > price.calculated_price_number
 
   return (
-    <>
+    <div className="flex flex-col items-start">
       {hasDiscount && (
         <Text
-          className="line-through text-ui-fg-muted"
+          className="text-xs text-slate-400 line-through"
           data-testid="original-price"
         >
           {price.original_price}
         </Text>
       )}
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1.5">
         <Text
-          className={clx("text-ui-fg-muted", {
-            "text-ui-fg-interactive": hasDiscount,
+          className={clx("text-lg font-extrabold", {
+            "text-orange-400": hasDiscount,
+            "text-white": !hasDiscount,
           })}
           data-testid="price"
         >
           {price.calculated_price}
         </Text>
-        <PixIcon className="h-3.5 w-3.5 shrink-0" />
+        <PixIcon className="h-4 w-4 shrink-0 text-teal-400" />
       </div>
-      {hasDiscount && (
-        <Text
-          className="rounded bg-pink-700 px-1.5 py-0.5 text-xs font-bold text-white"
-          data-testid="discount-percentage"
-        >
-          -{price.percentage_diff}%
-        </Text>
-      )}
-    </>
+    </div>
   )
 }

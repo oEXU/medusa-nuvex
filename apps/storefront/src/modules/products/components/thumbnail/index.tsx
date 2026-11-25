@@ -10,7 +10,9 @@ type ThumbnailProps = {
   images?: { url?: string }[] | null
   size?: "small" | "medium" | "large" | "full" | "square"
   isFeatured?: boolean
+  aspectRatio?: "card" | "featured"
   className?: string
+  imageClassName?: string
   alt?: string
   "data-testid"?: string
 }
@@ -20,7 +22,9 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
   images,
   size = "small",
   isFeatured,
+  aspectRatio,
   className,
+  imageClassName,
   alt = "",
   "data-testid": dataTestid,
 }) => {
@@ -32,8 +36,11 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
         "relative w-full overflow-hidden p-4 bg-ui-bg-subtle shadow-elevation-card-rest rounded-large group-hover:shadow-elevation-card-hover transition-shadow ease-in-out duration-150",
         className,
         {
-          "aspect-[11/14]": isFeatured,
-          "aspect-[9/16]": !isFeatured && size !== "square",
+          "aspect-[1.15]": aspectRatio === "card",
+          "aspect-[11/14]":
+            aspectRatio === "featured" || (isFeatured && !aspectRatio),
+          "aspect-[9/16]":
+            !isFeatured && size !== "square" && !aspectRatio,
           "aspect-[1/1]": size === "square",
           "w-[180px]": size === "small",
           "w-[290px]": size === "medium",
@@ -43,7 +50,12 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
       )}
       data-testid={dataTestid}
     >
-      <ImageOrPlaceholder image={initialImage} size={size} alt={alt} />
+      <ImageOrPlaceholder
+        image={initialImage}
+        size={size}
+        alt={alt}
+        imageClassName={imageClassName}
+      />
     </Container>
   )
 }
@@ -52,12 +64,18 @@ const ImageOrPlaceholder = ({
   image,
   size,
   alt,
-}: Pick<ThumbnailProps, "size" | "alt"> & { image?: string }) => {
+  imageClassName,
+}: Pick<ThumbnailProps, "size" | "alt" | "imageClassName"> & {
+  image?: string
+}) => {
   return image ? (
     <Image
       src={resolveImageUrl(image)}
       alt={alt ?? ""}
-      className="absolute inset-0 object-cover object-center"
+      className={clx(
+        "absolute inset-0 object-cover object-center",
+        imageClassName
+      )}
       draggable={false}
       sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 480px, 800px"
       fill
